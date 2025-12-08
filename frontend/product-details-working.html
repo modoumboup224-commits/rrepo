@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Détails du produit</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        body {
+            background-image: url('images/bg.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: -1;
+        }
+
+        main {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Gallery Styles */
+        .product-gallery {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .main-product-image {
+            max-width: 400px;
+            max-height: 400px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
+        }
+
+        .thumbnails {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 15px 0;
+        }
+
+        .thumbnail {
+            width: 80px;
+            height: 80px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+
+        .thumbnail:hover {
+            border-color: #26331a;
+        }
+
+        .thumbnail.active {
+            border-color: #26331a;
+        }
+
+        .thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .no-image {
+            width: 400px;
+            height: 300px;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            color: #666;
+            font-style: italic;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Inclusion du header commun -->
+    <div id="header-placeholder"></div>
+
+    <main
+        style="max-width: 900px; margin: 20px auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+        <h1>Détails du produit</h1>
+
+        <section id="product-details" style="margin-bottom: 30px;">
+            <h2 id="product-name">Chargement...</h2>
+
+            <!-- Galerie d'images -->
+            <div id="product-images-container" class="product-gallery">
+                <!-- Les images seront chargées ici -->
+            </div>
+
+            <p><strong>Catégorie:</strong> <span id="product-category"></span></p>
+            <p><strong>Région:</strong> <span id="product-region"></span></p>
+            <p><strong>Prix:</strong> €<span id="product-price"></span></p>
+            <p><strong>Date limite de consommation:</strong> <span id="product-expiration"></span></p>
+            <p><strong>Description:</strong> <span id="product-description"></span></p>
+            <p><strong>Origine:</strong> <span id="product-origin"></span></p>
+            <p><strong>Impact:</strong> <span id="product-impact"></span></p>
+
+            <!-- Bouton Ajouter au panier -->
+            <div style="margin: 20px 0; text-align: center;">
+                <button id="add-to-cart-btn" style="background-color: #26331a; color: white; border: none; padding: 12px 24px; 
+                               border-radius: 25px; cursor: pointer; font-size: 16px; display: inline-flex; 
+                               align-items: center; gap: 8px; transition: all 0.3s ease;"
+                    onmouseover="this.style.backgroundColor='#1a2412'"
+                    onmouseout="this.style.backgroundColor='#26331a'">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg>
+                    Ajouter au panier
+                </button>
+                <div id="cart-message" style="margin-top: 10px; font-weight: bold; display: none;"></div>
+            </div>
+        </section>
+
+        <section id="comments-section">
+            <h3>Commentaires</h3>
+            <div id="comments-list">
+                <!-- Commentaires chargés dynamiquement -->
+            </div>
+            <textarea id="new-comment" placeholder="Ajouter un commentaire..."
+                style="width: 100%; height: 80px; margin-top: 10px;"></textarea><br />
+            <button id="submit-comment"
+                style="margin-top: 10px; padding: 8px 15px; background-color: #26331a; color: white; border: none; border-radius: 4px; cursor: pointer;">Envoyer</button>
+            <p id="comment-message"></p>
+        </section>
+    </main>
+
+    <!-- Inclusion du footer commun -->
+    <div id="footer-placeholder"></div>
+
+    <script>
+        // Chargement dynamique du header et footer
+        async function loadHTML(id, url) {
+            const response = await fetch(url);
+            const text = await response.text();
+            document.getElementById(id).innerHTML = text;
+        }
+        loadHTML('header-placeholder', 'header.html');
+        loadHTML('footer-placeholder', 'footer.html');
+
+        // Function to get query parameters from URL
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        async function fetchProductDetails(productId) {
+            try {
+                const response = await fetch('/api/products/' + productId);
+                if (!response.ok) {
+                    throw new Error('Produit non trouvé');
+                }
+                const product = await response.json();
+                return product;
+            } catch (error) {
+                console.error(error);
+                return null;
+            }
+        }
+
+        function displayProductDetails(product) {
+            if (!product) {
+                document.getElementById('product-details').innerHTML = '<p>Produit non trouvé.</p>';
+                return;
+            }
+            document.getElementById('product-name').textContent = product.name || 'N/A';
+            document.getElementById('product-category').textContent = product.category || 'N/A';
+            document.getElementById('product-region').textContent = product.region || 'N/A';
+            document.getElementById('product-price').textContent = product.price ? product.price.toFixed(2) : 'N/A';
+            document.getElementById('product-expiration').textContent = product.expirationDate ? new Date(product.expirationDate).toLocaleDateString() : 'N/A';
+            document.getElementById('product-description').textContent = product.description || 'N/A';
+            document.getElementById('product-origin').textContent = product.origin || 'N/A';
+            document.getElementById('product-impact').textContent = product.impact || 'N/A';
+
+            // Affichage des images
+            displayProductImages(product);
+        }
+
+        function displayProductImages(product) {
+            const container = document.getElementById('product-images-container');
+            const images = product.images || [];
+
+            // Vérifier si nous avons des images
+            if (images && images.length > 0) {
+                // Afficher la galerie avec les images
+                container.innerHTML = `
+                    <div class="product-gallery">
+                        <img src="${images[0]}" alt="${product.name || 'Image du produit'}" 
+                             class="main-product-image" id="main-product-image">
+                        <div class="thumbnails">
+                            ${images.map((img, index) => `
+                                <div class="thumbnail ${index === 0 ? 'active' : ''}" 
+                                     onclick="changeImage('${img}', this)">
+                                    <img src="${img}" alt="Image ${index + 1}">
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            } else if (product.imageUrl) {
+                // Fallback sur l'image unique
+                container.innerHTML = `
+                    <div class="product-gallery">
+                        <img src="${product.imageUrl}" alt="${product.name || 'Image du produit'}" 
+                             class="main-product-image">
+                    </div>
+                `;
+            } else {
+                // Image par défaut
+                container.innerHTML = `
+                    <div class="no-image">
+                        Aucune image disponible
+                    </div>
+                `;
+            }
+        }
+
+        function changeImage(imageSrc, thumbnailElement) {
+            document.getElementById('main-product-image').src = imageSrc;
+
+            // Mettre à jour l'image active
+            document.querySelectorAll('.thumbnail').forEach(thumb => {
+                thumb.classList.remove('active');
+            });
+            thumbnailElement.classList.add('active');
+        }
+
+        // Mock comments data
+        let comments = [
+            { id: 1, text: "Produit de très bonne qualité." },
+            { id: 2, text: "Livraison rapide, merci !" }
+        ];
+
+        function renderComments() {
+            const commentsList = document.getElementById('comments-list');
+            commentsList.innerHTML = '';
+            if (comments.length === 0) {
+                commentsList.innerHTML = '<p>Aucun commentaire pour le moment.</p>';
+                return;
+            }
+            comments.forEach(comment => {
+                const div = document.createElement('div');
+                div.textContent = comment.text;
+                commentsList.appendChild(div);
+            });
+        }
+
+        document.getElementById('submit-comment').addEventListener('click', () => {
+            const newCommentInput = document.getElementById('new-comment');
+            const commentMessage = document.getElementById('comment-message');
+            const commentText = newCommentInput.value.trim();
+            if (commentText === '') {
+                commentMessage.textContent = 'Le commentaire ne peut pas être vide.';
+                commentMessage.style.color = 'red';
+                return;
+            }
+            // Ici, appel API pour enregistrer le commentaire
+            comments.push({ id: comments.length + 1, text: commentText });
+            renderComments();
+            newCommentInput.value = '';
+            commentMessage.textContent = 'Commentaire ajouté avec succès.';
+            commentMessage.style.color = 'green';
+        });
+
+        // Cart functionality
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let currentProduct = null;
+
+        function saveCart() {
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartCount();
+        }
+
+        function updateCartCount() {
+            const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const cartCountElement = document.getElementById('cart-count');
+            if (cartCountElement) {
+                cartCountElement.textContent = cartCount;
+            }
+        }
+
+        function addToCart(product) {
+            if (!product) return;
+
+            const existingItem = cart.find(item => item.id === product.id);
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    quantity: 1
+                });
+            }
+
+            saveCart();
+
+            // Show success message
+            const messageEl = document.getElementById('cart-message');
+            messageEl.textContent = `${product.name} ajouté au panier!`;
+            messageEl.style.color = 'green';
+            messageEl.style.display = 'block';
+
+            // Hide message after 3 seconds
+            setTimeout(() => {
+                messageEl.style.display = 'none';
+            }, 3000);
+        }
+
+        function displayProductDetails(product) {
+            if (!product) {
+                document.getElementById('product-details').innerHTML = '<p>Produit non trouvé.</p>';
+                return;
+            }
+
+            currentProduct = product;
+
+            document.getElementById('product-name').textContent = product.name || 'N/A';
+            document.getElementById('product-category').textContent = product.category || 'N/A';
+            document.getElementById('product-region').textContent = product.region || 'N/A';
+            document.getElementById('product-price').textContent = product.price ? product.price.toFixed(2) : 'N/A';
+            document.getElementById('product-expiration').textContent = product.expirationDate ? new Date(product.expirationDate).toLocaleDateString() : 'N/A';
+            document.getElementById('product-description').textContent = product.description || 'N/A';
+            document.getElementById('product-origin').textContent = product.origin || 'N/A';
+            document.getElementById('product-impact').textContent = product.impact || 'N/A';
+
+            // Affichage des images
+            displayProductImages(product);
+        }
+
+        async function init() {
+            const productId = getQueryParam('id');
+            if (!productId) {
+                document.getElementById('product-details').innerHTML = '<p>ID de produit manquant dans l\'URL.</p>';
+                return;
+            }
+            const product = await fetchProductDetails(productId);
+            displayProductDetails(product);
+            renderComments();
+
+            // Add event listener for add to cart button
+            document.getElementById('add-to-cart-btn').addEventListener('click', () => {
+                if (currentProduct) {
+                    addToCart(currentProduct);
+                }
+            });
+
+            // Initialize cart count
+            updateCartCount();
+        }
+
+        window.onload = init;
+    </script>
+</body>
+
+</html>

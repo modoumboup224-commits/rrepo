@@ -1,0 +1,76 @@
+. 2025-08-19 17:18:57.198 --------------------------------------------------------------------------
+. 2025-08-19 17:18:57.198 WinSCP Version 6.3.3 (Build 14916 2024-04-16) (OS 10.0.26100 – Windows 10 Home)
+. 2025-08-19 17:18:57.199 Configuration: C:\Users\FX706\Desktop\GreenCard\winscp\WinSCP.ini
+. 2025-08-19 17:18:57.199 Log level: Normal
+. 2025-08-19 17:18:57.199 Local account: LAPTOP-REJUJR9A\FX706
+. 2025-08-19 17:18:57.199 Working directory: C:\Users\FX706\Desktop\GreenCard
+. 2025-08-19 17:18:57.199 Process ID: 18340
+. 2025-08-19 17:18:57.224 Ancestor processes: pwsh, Code, Code, explorer, ...
+. 2025-08-19 17:18:57.225 Command-line: "C:\Users\FX706\Desktop\GreenCard\winscp\WinSCP.exe" /script=deploy-script.txt /log=ftp-deployment.log
+. 2025-08-19 17:18:57.226 Time zone: Current: GMT+2, Standard: GMT+1 (Paris, Madrid), DST: GMT+2 (Paris, Madrid (heure d’été)), DST Start: 30/03/2025, DST End: 26/10/2025
+. 2025-08-19 17:18:57.226 Login time: mardi 19 août 2025 17:18:57
+. 2025-08-19 17:18:57.226 --------------------------------------------------------------------------
+. 2025-08-19 17:18:57.226 Script: Retrospectively logging previous script records:
+> 2025-08-19 17:18:57.226 Script: option batch abort
+< 2025-08-19 17:18:57.226 Script: batch           abort     
+> 2025-08-19 17:18:57.226 Script: option confirm off
+< 2025-08-19 17:18:57.227 Script: confirm         off       
+> 2025-08-19 17:18:57.227 Script: open ftp://eq8a66.ftp.infomaniak.com
+. 2025-08-19 17:18:57.227 --------------------------------------------------------------------------
+. 2025-08-19 17:18:57.227 Session name: eq8a66.ftp.infomaniak.com (Ad-Hoc site)
+. 2025-08-19 17:18:57.227 Host name: eq8a66.ftp.infomaniak.com (Port: 21)
+. 2025-08-19 17:18:57.227 User name:  (Password: No, Key file: No, Passphrase: No)
+. 2025-08-19 17:18:57.227 Transfer Protocol: FTP
+. 2025-08-19 17:18:57.227 Ping type: Dummy, Ping interval: 30 sec; Timeout: 15 sec
+. 2025-08-19 17:18:57.227 Disable Nagle: No
+. 2025-08-19 17:18:57.227 Proxy: None
+. 2025-08-19 17:18:57.227 Send buffer: 262144
+. 2025-08-19 17:18:57.227 UTF: Auto
+. 2025-08-19 17:18:57.227 FTPS: None [Client certificate: No]
+. 2025-08-19 17:18:57.227 FTP: Passive: Yes [Force IP: Auto]; MLSD: Auto [List all: Auto]; HOST: Auto
+. 2025-08-19 17:18:57.227 Local directory: default, Remote directory: home, Update: Yes, Cache: Yes
+. 2025-08-19 17:18:57.227 Cache directory changes: Yes, Permanent: Yes
+. 2025-08-19 17:18:57.227 Recycle bin: Delete to: No, Overwritten to: No, Bin path: 
+. 2025-08-19 17:18:57.227 Timezone offset: 0h 0m
+. 2025-08-19 17:18:57.227 --------------------------------------------------------------------------
+. 2025-08-19 17:18:57.251 Username prompt (no username provided)
+< 2025-08-19 17:18:57.251 Script: Prompting for credentials...
+< 2025-08-19 17:18:57.251 Script: Credentials were not specified.
+. 2025-08-19 17:19:02.961 --------------------------------------------------------------------------
+. 2025-08-19 17:19:02.962 WinSCP Version 6.3.3 (Build 14916 2024-04-16) (OS 10.0.26100 – Windows 10 Home)
+. 2025-08-19 17:19:02.963 Configuration: C:\Users\FX706\Desktop\GreenCard\winscp\WinSCP.ini
+. 2025-08-19 17:19:02.963 Log level: Normal
+. 2025-08-19 17:19:02.963 Local account: LAPTOP-REJUJR9A\FX706
+. 2025-08-19 17:19:02.963 Working directory: C:\Users\FX706\Desktop\GreenCard
+. 2025-08-19 17:19:02.963 Process ID: 12044
+. 2025-08-19 17:19:02.993 Ancestor processes: pwsh, Code, Code, explorer, ...
+. 2025-08-19 17:19:02.993 Command-line: "C:\Users\FX706\Desktop\GreenCard\winscp\WinSCP.exe" /script=deploy-script.txt /log=ftp-deployment.log
+. 2025-08-19 17:19:02.993 Time zone: Current: GMT+2, Standard: GMT+1 (Paris, Madrid), DST: GMT+2 (Paris, Madrid (heure d’été)), DST Start: 30/03/2025, DST End: 26/10/2025
+. 2025-08-19 17:19:02.994 Login time: mardi 19 août 2025 17:19:02
+. 2025-08-19 17:19:02.994 --------------------------------------------------------------------------
+. 2025-08-19 17:19:02.994 Script: Retrospectively logging previous script records:
+> 2025-08-19 17:19:02.994 Script: option batch abort
+< 2025-08-19 17:19:02.994 Script: batch           abort     
+> 2025-08-19 17:19:02.994 Script: option confirm off
+< 2025-08-19 17:19:02.994 Script: confirm         off       
+> 2025-08-19 17:19:02.994 Script: open ftp://eq8a66.ftp.infomaniak.com
+. 2025-08-19 17:19:02.994 --------------------------------------------------------------------------
+. 2025-08-19 17:19:02.994 Session name: eq8a66.ftp.infomaniak.com (Ad-Hoc site)
+. 2025-08-19 17:19:02.994 Host name: eq8a66.ftp.infomaniak.com (Port: 21)
+. 2025-08-19 17:19:02.994 User name:  (Password: No, Key file: No, Passphrase: No)
+. 2025-08-19 17:19:02.994 Transfer Protocol: FTP
+. 2025-08-19 17:19:02.994 Ping type: Dummy, Ping interval: 30 sec; Timeout: 15 sec
+. 2025-08-19 17:19:02.994 Disable Nagle: No
+. 2025-08-19 17:19:02.994 Proxy: None
+. 2025-08-19 17:19:02.994 Send buffer: 262144
+. 2025-08-19 17:19:02.994 UTF: Auto
+. 2025-08-19 17:19:02.994 FTPS: None [Client certificate: No]
+. 2025-08-19 17:19:02.994 FTP: Passive: Yes [Force IP: Auto]; MLSD: Auto [List all: Auto]; HOST: Auto
+. 2025-08-19 17:19:02.994 Local directory: default, Remote directory: home, Update: Yes, Cache: Yes
+. 2025-08-19 17:19:02.994 Cache directory changes: Yes, Permanent: Yes
+. 2025-08-19 17:19:02.994 Recycle bin: Delete to: No, Overwritten to: No, Bin path: 
+. 2025-08-19 17:19:02.994 Timezone offset: 0h 0m
+. 2025-08-19 17:19:02.994 --------------------------------------------------------------------------
+. 2025-08-19 17:19:03.006 Username prompt (no username provided)
+< 2025-08-19 17:19:03.006 Script: Prompting for credentials...
+< 2025-08-19 17:19:03.006 Script: Credentials were not specified.

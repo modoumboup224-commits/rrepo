@@ -1,0 +1,211 @@
+#!/usr/bin/env node
+```python
+# Configuration complete for the base de données greencard
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python
+```python
+    ```python

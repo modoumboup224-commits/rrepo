@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Login</title>
+  <style>
+    body {
+      background-image: url('images/bg.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+      min-height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: -1;
+    }
+
+    main {
+      position: relative;
+      z-index: 1;
+    }
+
+    #message {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    #message.error {
+      color: red;
+    }
+
+    #message.success {
+      color: green;
+    }
+
+    #loading {
+      display: none;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Inclusion du header commun -->
+  <div id="header-placeholder"></div>
+
+  <main
+    style="max-width: 400px; margin: 40px auto; background: rgba(255, 255, 255, 0.95); padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+    <h1>Connexion</h1>
+    <form id="loginForm" style="display: flex; flex-direction: column;">
+      <input type="text" id="username" name="username" placeholder="Nom d'utilisateur" required
+        style="margin-bottom: 15px; padding: 10px; border-radius: 4px; border: 1px solid #ccc;" />
+      <input type="password" id="password" name="password" placeholder="Mot de passe" required
+        autocomplete="current-password"
+        style="margin-bottom: 15px; padding: 10px; border-radius: 4px; border: 1px solid #ccc;" />
+      <button type="submit"
+        style="padding: 10px; background-color: #26331a; color: white; border: none; border-radius: 4px; cursor: pointer;">Se
+        connecter</button>
+    </form>
+    <div id="loading" style="display:none; margin-top: 10px;">Chargement...</div>
+    <p id="message" style="margin-top: 10px; font-weight: bold;"></p>
+    <p style="margin-top: 20px;">
+      Pas encore inscrit ?
+      <a href="register-consumer.html">Je suis consommateur</a> |
+      <a href="register-producer.html">Je suis producteur</a>
+    </p>
+  </main>
+
+  <!-- Inclusion du footer commun -->
+  <div id="footer-placeholder"></div>
+
+  <script>
+    const form = document.getElementById('loginForm');
+    const messageEl = document.getElementById('message');
+    const loadingEl = document.getElementById('loading');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      messageEl.textContent = '';
+      messageEl.className = '';
+      loadingEl.style.display = 'block';
+
+      const username = form.username.value;
+      const password = form.password.value;
+
+      try {
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        const data = await response.json();
+        loadingEl.style.display = 'none';
+
+        if (response.ok) {
+          messageEl.textContent = 'Connexion réussie';
+          messageEl.className = 'success';
+          localStorage.setItem('token', data.token);
+          // Redirection exemple : window.location.href = 'index.html';
+        } else {
+          messageEl.textContent = 'Erreur : ' + data.message;
+          messageEl.className = 'error';
+        }
+      } catch (error) {
+        loadingEl.style.display = 'none';
+        messageEl.textContent = 'Erreur réseau';
+        messageEl.className = 'error';
+      }
+    });
+  </script>
+</body>
+
+</html>

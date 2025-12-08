@@ -1,0 +1,27 @@
+{
+    "name": "GreenCard - Infomaniak",
+    "host": "eq8a66.ftp.infomaniak.com",
+    "port": 21,
+    "type": "ftp",
+    "username": "eq8a66_temp_2",
+    "password": "eq8a66_temp_1",
+    "path": "/",
+    "autosave": true,
+    "confirm": true,
+    "secure": false,
+    "secureOptions": null,
+    "passive": true,
+    "uploadOnSave": true,
+    "uploadOnChange": false,
+    "syncMode": "update",
+    "ignore": [
+        ".vscode",
+        ".git",
+        ".DS_Store",
+        "node_modules",
+        "package-lock.json",
+        "*.log"
+    ],
+    "localPath": "./frontend",
+    "remotePath": "/www"
+}

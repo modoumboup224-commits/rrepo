@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Publication de produit - Producteur</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <h1>Publier un produit</h1>
+    <form id="productPublishForm">
+        <label for="productName">Nom du produit :</label><br />
+        <input type="text" id="productName" name="productName" required /><br /><br />
+
+        <label for="category">Catégorie :</label><br />
+        <select id="category" name="category" required>
+            <option value="">Sélectionnez une catégorie</option>
+            <option value="Fruits">Fruits</option>
+            <option value="Légumes">Légumes</option>
+            <option value="Plantes">Plantes</option>
+        </select><br /><br />
+
+        <label for="region">Région :</label><br />
+        <input type="text" id="region" name="region" required /><br /><br />
+
+        <label for="price">Prix (€) :</label><br />
+        <input type="number" id="price" name="price" min="0" step="0.01" required /><br /><br />
+
+        <label for="quantity">Quantité disponible :</label><br />
+        <input type="number" id="quantity" name="quantity" min="0" required /><br /><br />
+
+        <label for="expirationDate">Date limite de consommation :</label><br />
+        <input type="date" id="expirationDate" name="expirationDate" required /><br /><br />
+
+        <label for="description">Description :</label><br />
+        <textarea id="description" name="description" rows="4"></textarea><br /><br />
+
+        <label for="origin">Origine :</label><br />
+        <input type="text" id="origin" name="origin" /><br /><br />
+
+        <label for="impact">Impact :</label><br />
+        <textarea id="impact" name="impact" rows="2"></textarea><br /><br />
+
+        <button type="submit">Publier</button>
+    </form>
+    <p id="message"></p>
+
+    <script>
+        const form = document.getElementById('productPublishForm');
+        const messageEl = document.getElementById('message');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            messageEl.textContent = '';
+            const productData = {
+                name: form.productName.value,
+                category: form.category.value,
+                region: form.region.value,
+                price: parseFloat(form.price.value),
+                quantity: parseInt(form.quantity.value),
+                expirationDate: form.expirationDate.value,
+                description: form.description.value,
+                origin: form.origin.value,
+                impact: form.impact.value
+            };
+
+            try {
+                const token = localStorage.getItem('token');
+
+                const response = await fetch('http://localhost:6300/api/products', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(productData)
+                });
+
+                if (response.ok) {
+                    messageEl.textContent = 'Produit publié avec succès.';
+                    messageEl.style.color = 'green';
+                    form.reset();
+                } else {
+                    const data = await response.json();
+                    messageEl.textContent = 'Erreur : ' + (data.message || 'Impossible de publier le produit.');
+                    messageEl.style.color = 'red';
+                }
+            } catch (error) {
+                messageEl.textContent = 'Erreur réseau.';
+                messageEl.style.color = 'red';
+                console.error(error);
+            }
+        });
+    </script>
+</body>
+
+</html>

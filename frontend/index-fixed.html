@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GreenCart - Circuit Court et Anti-Gaspi</title>
+    <meta name="description"
+        content="GreenCart connecte producteurs locaux et consommateurs responsables à travers une plateforme simple, moderne et durable." />
+    <meta name="keywords"
+        content="GreenCart, circuit court, anti-gaspi, producteurs locaux, consommateurs responsables" />
+    <!-- Lien vers Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        body {
+            margin: 0 auto;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #ebe6e6;
+            color: #000000;
+        }
+
+        width: 150px
+        }
+
+        header {
+            background-color: #26331a;
+            color: rgb(221, 221, 221);
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .big-title {
+            color: #e7f6e4;
+            font-size: 80px;
+        }
+
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        nav a {
+            color: rgb(224, 222, 222);
+            text-decoration: none;
+            margin-left: 20px;
+            font-weight: bold;
+        }
+
+        .hero {
+            padding: 60px 20px;
+            background: url('images/bg.jpg');
+            height: 80vh;
+            background-size: cover;
+            color: rgb(0, 0, 0);
+            text-align: center;
+        }
+
+
+
+        .hero h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 18px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+
+
+        .values,
+        .advantages,
+        .cta {
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .advantages ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .advantages li {
+            background: #e7f6e4;
+            margin: 10px auto;
+            max-width: 600px;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .cta button {
+            margin: 10px;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            color: white;
+            background-color: #061301;
+        }
+
+        .cta button:hover {
+            background-color: #081303;
+        }
+
+        @media (max-width: 600px) {
+            .hero h2 {
+                font-size: 28px;
+            }
+        }
+
+        .services {
+            display: flex;
+            justify-content: space-between;
+            margin: 50px;
+
+        }
+
+        .service-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .delivery-icon {
+            font-size: 70px;
+        }
+
+        .section-tiltle {
+            font-size: 50px;
+        }
+
+        .En-Vedette {
+            margin: 50px;
+        }
+
+        .Produits-En-Vedette {
+            background-color: ;
+            min-height: 500px;
+            display: flex;
+            flex-wrap: wrap;
+            flex: 1;
+        }
+
+        .produits-box {
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            min-width: 350px;
+            height: 650px;
+            flex: 1;
+        }
+
+        .no-grid {
+            min-width: 350px;
+            height: 650px;
+            flex: 1;
+        }
+
+        .produits-grid {
+            display: grid;
+            min-height: 150vh;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(4, 400px);
+        }
+
+        .produits-grid1 {
+            background-image: url(images/nos_plantes/1.jpg);
+            grid-column: 1/3;
+            grid-row: 1/3;
+        }
+
+        .produits-grid2 {
+            background-image: url(images/nos_plantes/2.jpg);
+            grid-column: 3/5;
+        }
+
+        .produits-grid3 {
+            background-image: url(images/nos_plantes/3.jpg);
+            grid-column: 3/5;
+        }
+
+        .produits-grid4 {
+            background-image: url(images/nos_plantes/4.jpg);
+        }
+
+        .produits-grid5 {
+            background-image: url(images/nos_plantes/5.jpg);
+        }
+
+        .produits-grid6 {
+            background-image: url(images/nos_plantes/6.jpg);
+        }
+
+        .produits-grid7 {
+            background-image: url(images/nos_plantes/7.jpg);
+        }
+
+        .produits-grid8 {
+            background-image: url(images/nos_plantes/8.jpg);
+        }
+
+        .produits1 {
+            background-image: url(images/nos_meilleures_ventes/11.webp);
+        }
+
+        .produits2 {
+            background-image: url(images/nos_meilleures_ventes/12.jpg);
+        }
+
+        .produits3 {
+            background-image: url(images/nos_meilleures_ventes/13.jpg);
+        }
+
+        .produits4 {
+            background-image: url(images/nos_meilleures_ventes/14.jpg);
+        }
+
+        .produits-details {
+            position: absolute;
+            width: 100%;
+            bottom: 0;
+            background-color: #26331a;
+            padding: 5px 20px;
+        }
+
+        .produits-name {
+            color: #e7f6e4;
+            font-size: 22px;
+            font-weight: 600;
+            line-height: 2px;
+        }
+
+        .produits-price {
+            color: #e7f6e4;
+            font-weight: 800;
+            line-height: 2px;
+        }
+
+        .Autres-prosuits {
+            margin: 100px;
+        }
+    </style>
+
+
+    <!-- Google Tag Manager -->
+    <script>(function (w, d, s, l, i) {
+            w[l] = w[l] || []; w[l].push({
+                'gtm.start':
+                    new Date().getTime(), event: 'gtm.js'
+            }); var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-5MF7C9TP');</script>
+    <!-- End Google Tag Manager -->
+</head>
+
+<body>
+    <section class="top-page">
+        <header class="header" style="display: flex; align-items: center; background-color: #26331a; padding: 10px;">
+            <img src="images/logo.png" alt="" style="height: 40px; margin-right: 15px;">
+            <h1 style="color: rgb(224, 222, 222); margin: 0 20px 0 0;">GreenCart</h1>
+            <nav style="display: flex; gap: 20px;">
+                <a href="#"
+                    style="color: rgb(224, 222, 222); text-decoration: none; font-weight: bold; font-size: 16px;">Accueil</a>
+                <a href="#"
+                    style="color: rgb(224, 222, 222); text-decoration: none; font-weight: bold; font-size: 16px;">Nos
+                    valeurs</a>
+                <a href="#"
+                    style="color: rgb(224, 222, 222); text-decoration: none; font-weight: bold; font-size: 16px;">Catalogue</a>
+                <a href="#"
+                    style="color: rgb(224, 222, 222); text-decoration: none; font-weight: bold; font-size: 16px;">Connexion</a>
+            </nav>
+        </header>
+        <div class="landing-page">
+        </div>
+    </section>
+    <section class="hero">
+        <h2 class="big-title">Consommez local et Luttez contre le gaspillage alimentaire.</h2>
+
+        <h1 class="big-title"> GreenCart connecte producteurs locaux et consommateurs responsables à travers une
+            plateforme simple,
+            moderne
+            et durable.</h1>
+    </section>
+
+    <section class="values">
+        <h3>Nos valeurs</h3>
+        <p>GreenCart valorise les circuits courts, la transparence, la lutte contre le gaspillage et la modernité des
+            outils pour les producteurs locaux.</p>
+    </section>
+
+    <section class="Catalogue services" id="delivery" class="delivery-container">
+        <!-- Service items removed as requested -->
+    </section>
+
+    <!-- Product Catalog Section -->
+    <section class="product-catalog">
+        <h2>Catalogue de Produits</h2>
+        <div class="filters">
+            <label for="categoryFilter">Catégorie:</label>
+            <select id="categoryFilter">
+                <option value="">Tous</option>
+                <option value="Fruits">Fruits</option>
+                <option value="Légumes">Légumes</option>
+                <option value="Plantes">Plantes</option>
+            </select>
+
+            <label for="regionFilter">Région:</label>
+            <select id="regionFilter">
+                <option value="">Toutes</option>
+                <option value="Nord">Nord</option>
+                <option value="Sud">Sud</option>
+                <option value="Est">Est</option>
+                <option value="Ouest">Ouest</option>
+            </select>
+
+            <label for="priceFilter">Prix max (€):</label>
+            <input type="number" id="priceFilter" min="0" step="0.01" placeholder="Prix max" />
+
+            <label for="expirationFilter">Date limite de consommation avant:</label>
+            <input type="date" id="expirationFilter" />
+
+            <button id="applyFilters">Appliquer les filtres</button>
+        </div>
+
+        <div id="productList" class="product-list">
+            <!-- Products will be dynamically inserted here -->
+        </div>
+    </section>
+
+    <section class="producteur-catalog">
+        <h2>Catalogue de Producteurs</h2>
+        <div id="producteurList" class="product-list">
+            <!-- Producteurs will be dynamically inserted here -->
+        </div>
+    </section>
+
+    <script>
+        async function fetchProducts(filters = {}) {
+            const queryParams = new URLSearchParams(filters);
+            const response = await fetch('http://localhost:6300/api/products?' + queryParams.toString());
+            const products = await response.json();
+            return products;
+        }
+
+        function renderProducts(products) {
+            const productList = document.getElementById('productList');
+            productList.innerHTML = '';
+            if (products.length === 0) {
+                productList.innerHTML = '<p>Aucun produit trouvé.</p>';
+                return;
+            }
+            products.forEach(product => {
+                console.log('Image URL:', product.imageUrl);
+                const productDiv = document.createElement('div');
+                productDiv.className = 'product-item';
+                productDiv.innerHTML = `
+                    <a href="product-details.html?id=${product._id}" style="text-decoration: none; color: inherit;">
+                        <h3>${product.name}</h3>
+                        <img src="${product.imageUrl && product.imageUrl.startsWith('http') ? product.imageUrl : 'http://localhost:6300' + (product.imageUrl || '/images/default-product.jpg')}" alt="${product.name}" style="max-width: 200px; max-height: 200px; object-fit: cover; margin-bottom: 10px;" />
+                        <p>Catégorie: ${product.category}</p>
+                        <p>Région: ${product.region}</p>
+                        <p>Prix: €${product.price.toFixed(2)}</p>
+                        <p>Date limite: ${new Date(product.expirationDate).toLocaleDateString()}</p>
+                        <p>Description: ${product.description || 'N/A'}</p>
+                        <p>Origine: ${product.origin || 'N/A'}</p>
+                        <p>Impact: ${product.impact || 'N/A'}</p>
+                    </a>
+                    <button onclick="addToCart('${product._id}', '${product.name}', ${product.price})">Ajouter au panier</button>
+                `;
+                productList.appendChild(productDiv);
+            });
+        }
+
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        function saveCart() {
+            localStorage.setItem('cart', JSON.stringify(cart));
+        }
+
+        function addToCart(id, name, price) {
+            const existingItem = cart.find(item => item.id === id);
+            if (existingItem) {
+                existingItem.quantity++;
+            } else {
+                cart.push({ id, name, price, quantity: 1 });
+            }
+            saveCart();
+            alert(name + ' a été ajouté au panier.');
+        }
+
+        async function fetchProducteurs() {
+            const response = await fetch('http://localhost:6300/api/producteurs');
+            const producteurs = await response.json();
+            return producteurs;
+        }
+
+        function renderProducteurs(producteurs) {
+            const producteurList = document.getElementById('producteurList');
+            producteurList.innerHTML = '';
+            if (producteurs.length === 0) {
+                producteurList.innerHTML = '<p>Aucun producteur trouvé.</p>';
+                return;
+            }
+            producteurs.forEach(producteur => {
+                const producteurDiv = document.createElement('div');
+                producteurDiv.className = 'product-item';
+                producteurDiv.innerHTML = `
+                    <h3>${producteur.nom}</h3>
+                    <img src="http://localhost:6300/images/default-producer.jpg" alt="${producteur.nom}" style="max-width: 200px; max-height: 200px; object-fit: cover; margin-bottom: 10px;" />
+                    <p>Localisation: ${producteur.localisation}</p>
+                `;
+                producteurList.appendChild(producteurDiv);
+            });
+        }
+
+        async function applyFilters() {
+            const category = document.getElementById('categoryFilter').value;
+            const region = document.getElementById('regionFilter').value;
+            const maxPrice = document.getElementById('priceFilter').value;
+            const expirationBefore = document.getElementById('expirationFilter').value;
+
+            const filters = {};
+            if (category) filters.category = category;
+            if (region) filters.region = region;
+            if (maxPrice) filters.maxPrice = maxPrice;
+            if (expirationBefore) filters.expirationBefore = expirationBefore;
+
+            const products = await fetchProducts(filters);
+            renderProducts(products);
+
+            const producteurs = await fetchProducteurs();
+            renderProducteurs(producteurs);
+        }
+
+        document.getElementById('applyFilters').addEventListener('click', applyFilters);
+
+        // Initial load
+        applyFilters();
+    </script>
+
+    <section class="En-vedette">
+        <h2 class="section-title">
+            En vedette
+        </h2>
+        <div class="Produits-En-Vedette">
+            <a class="produits-box produits1 no-grid">
+                <div class="produits-details">
+                    <p class="produits-name">Radis</p>
+                    <p class="produits-price">10E</p>
+                </div>
+            </a>
+            <a class="produits-box produits2 no-grid">
+                <div class="produits-details">
+                    <p class="produits-name">Aubergine</p>
+                    <p class="produits-price">10E</p>
+                </div>
+            </a>
+            <a class="produits-box produits3 no-grid">
+                <div class="produits-details">
+                    <p class="produits-name">Pomme</p>
+                    <p class="produits-price">10E</p>
+                </div>
+            </a>
+            <a class="produits-box produits4 no-grid">
+                <div class="produits-details">
+                    <p class="produits-name">Orange</p>
+                    <p class="produits-price">10E</p>
+                </div>
+            </a>
+        </div>
+    </section>
+
+
+    <section class="advantages">
+        <h3>Pourquoi choisir GreenCart ?</h3>
+        <ul>
+            <li> Des produits locaux à prix réduit, près de chez vous.</li>
+            <li> Valorisation des invendus pour réduire le gaspillage alimentaire.</li>
+            <li> Suivi de votre impact environnemental via votre tableau de bord.</li>
+        </ul>
+    </section>
+
+    <section class="cta">
+        <h3>Rejoignez nous</h3>
+        <button onclick="location.href='register-consumer.html'">Je suis consommateur</button>
+        <button onclick="location.href='register-producer.html'">Je suis producteur</button>
+    </section>
+
+
+
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5MF7C9TP" height="0" width="0"
+            style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+</body>
+
+</html>

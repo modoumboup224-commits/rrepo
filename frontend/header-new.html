@@ -1,0 +1,75 @@
+<header
+    style="background-color: #26331a; padding: 10px 20px; color: white; display: flex; align-items: center; justify-content: space-between;">
+    <div class="logo" style="font-weight: bold; font-size: 1.5em;">
+        <a href="index.html" style="color: white; text-decoration: none;">GreenCard</a>
+    </div>
+    <nav id="main-nav">
+        <a href="index.html" style="color: white; margin-right: 15px; text-decoration: none;">Accueil</a>
+        <a href="product-details.html?id=1"
+            style="color: white; margin-right: 15px; text-decoration: none;">Produits</a>
+        <a href="cart.html" style="color: white; margin-right: 15px; text-decoration: none;">Panier</a>
+        <a href="login-updated.html" id="login-link"
+            style="color: white; margin-right: 15px; text-decoration: none;">Connexion</a>
+        <a href="register-consumer.html" id="register-link"
+            style="color: white; margin-right: 15px; text-decoration: none;">Inscription</a>
+        <a href="dashboard.html" id="dashboard-link"
+            style="color: white; margin-right: 15px; text-decoration: none;">Dashboard</a>
+        <a href="producer-product-publish.html" id="producer-dashboard-link"
+            style="color: #4CAF50; margin-right: 15px; text-decoration: none; display: none;">Gérer mes produits</a>
+        <a href="producer-order-management.html" id="producer-orders-link"
+            style="color: #FF9800; margin-right: 15px; text-decoration: none; display: none;">Mes commandes</a>
+        <button onclick="logout()" id="logout-btn"
+            style="background-color: #f44336; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; display: none;">Déconnexion</button>
+    </nav>
+</header>
+
+<script>
+    // Check authentication status and update navigation
+    function updateNavigation() {
+        const token = localStorage.getItem('token');
+        const userRole = localStorage.getItem('userRole');
+
+        const loginLink = document.getElementById('login-link');
+        const registerLink = document.getElementById('register-link');
+        const dashboardLink = document.getElementById('dashboard-link');
+        const producerDashboardLink = document.getElementById('producer-dashboard-link');
+        const producerOrdersLink = document.getElementById('producer-orders-link');
+        const logoutBtn = document.getElementById('logout-btn');
+
+        if (token) {
+            // User is logged in
+            loginLink.style.display = 'none';
+            registerLink.style.display = 'none';
+            dashboardLink.style.display = 'inline';
+            logoutBtn.style.display = 'inline';
+
+            if (userRole === 'producer') {
+                producerDashboardLink.style.display = 'inline';
+                producerOrdersLink.style.display = 'inline';
+                dashboardLink.textContent = 'Tableau de bord Producteur';
+            } else {
+                dashboardLink.textContent = 'Mon compte';
+            }
+        } else {
+            // User is logged out
+            loginLink.style.display = 'inline';
+            registerLink.style.display = 'inline';
+            dashboardLink.style.display = 'none';
+            producerDashboardLink.style.display = 'none';
+            producerOrdersLink.style.display = 'none';
+            logoutBtn.style.display = 'none';
+        }
+    }
+
+    // Logout function
+    function logout() {
+        localStorage.removeItem('token');
+        localStorage.removeItem('userRole');
+        localStorage.removeItem('userId');
+        updateNavigation();
+        window.location.href = 'index.html';
+    }
+
+    // Update navigation on page load
+    document.addEventListener('DOMContentLoaded', updateNavigation);
+</script>

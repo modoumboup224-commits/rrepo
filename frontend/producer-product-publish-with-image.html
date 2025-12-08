@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Publication de produit - Producteur</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #90EE90 0%, #228B22 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .form-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 500px;
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            color: #26331a;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #26331a;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background-color: #f9f9f9;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #228B22;
+            background-color: #fff;
+            box-shadow: 0 0 8px rgba(34, 139, 34, 0.3);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .image-upload {
+            border: 2px dashed #228B22;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            background-color: #f9f9f9;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .image-upload:hover {
+            background-color: #f0f8f0;
+            border-color: #32CD32;
+        }
+
+        .image-upload.dragover {
+            background-color: #e8f5e8;
+            border-color: #228B22;
+        }
+
+        .image-preview {
+            margin-top: 15px;
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 8px;
+            display: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .upload-text {
+            color: #666;
+            font-size: 14px;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #228B22, #32CD32);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #1e7e1e, #228B22);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(34, 139, 34, 0.4);
+        }
+
+        #message {
+            text-align: center;
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .success {
+            color: #228B22;
+        }
+
+        .error {
+            color: #d32f2f;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="form-container">
+        <h1>Publier un produit</h1>
+        <form id="productPublishForm">
+            <div class="form-group">
+                <label for="productName">Nom du produit :</label>
+                <input type="text" id="productName" name="productName" required />
+            </div>
+
+            <div class="form-group">
+                <label for="category">Catégorie :</label>
+                <select id="category" name="category" required>
+                    <option value="">Sélectionnez une catégorie</option>
+                    <option value="Fruits">Fruits</option>
+                    <option value="Légumes">Légumes</option>
+                    <option value="Plantes">Plantes</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="region">Région :</label>
+                <input type="text" id="region" name="region" required />
+            </div>
+
+            <div class="form-group">
+                <label for="price">Prix (€) :</label>
+                <input type="number" id="price" name="price" min="0" step="0.01" required />
+            </div>
+
+            <div class="form-group">
+                <label for="quantity">Quantité disponible :</label>
+                <input type="number" id="quantity" name="quantity" min="0" required />
+            </div>
+
+            <div class="form-group">
+                <label for="expirationDate">Date limite de consommation :</label>
+                <input type="date" id="expirationDate" name="expirationDate" required />
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description :</label>
+                <textarea id="description" name="description" rows="4"
+                    placeholder="Décrivez votre produit..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="origin">Origine :</label>
+                <input type="text" id="origin" name="origin" placeholder="Pays ou région d'origine" />
+            </div>
+
+            <div class="form-group">
+                <label for="impact">Impact :</label>
+                <textarea id="impact" name="impact" rows="2"
+                    placeholder="Impact environnemental ou social..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Image du produit :</label>
+                <div class="image-upload" onclick="document.getElementById('imageInput').click()">
+                    <input type="file" id="imageInput" class="file-input" accept="image/*" />
+                    <div class="upload-text">
+                        📷 Cliquez ou glissez une image ici
+                    </div>
+                </div>
+                <img id="imagePreview" class="image-preview" alt="Aperçu de l'image" />
+            </div>
+
+            <button type="submit">Publier le produit</button>
+        </form>
+        <p id="message"></p>
+    </div>
+
+    <script>
+        const form = document.getElementById('productPublishForm');
+        const messageEl = document.getElementById('message');
+        const imageInput = document.getElementById('imageInput');
+        const imagePreview = document.getElementById('imagePreview');
+        let selectedImage = null;
+
+        // Gestion de l'upload d'image
+        imageInput.addEventListener('change', handleImageSelect);
+
+        // Gestion du drag & drop
+        const imageUpload = document.querySelector('.image-upload');
+
+        imageUpload.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            imageUpload.classList.add('dragover');
+        });
+
+        imageUpload.addEventListener('dragleave', () => {
+            imageUpload.classList.remove('dragover');
+        });
+
+        imageUpload.addEventListener('drop', (e) => {
+            e.preventDefault();
+            imageUpload.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0 && files[0].type.startsWith('image/')) {
+                handleImageFile(files[0]);
+            }
+        });
+
+        function handleImageSelect(e) {
+            const file = e.target.files[0];
+            if (file) {
+                handleImageFile(file);
+            }
+        }
+
+        function handleImageFile(file) {
+            if (file && file.type.startsWith('image/')) {
+                selectedImage = file;
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    imagePreview.src = e.target.result;
+                    imagePreview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            messageEl.textContent = '';
+            messageEl.className = '';
+
+            const formData = new FormData();
+            formData.append('name', form.productName.value);
+            formData.append('category', form.category.value);
+            formData.append('region', form.region.value);
+            formData.append('price', parseFloat(form.price.value));
+            formData.append('quantity', parseInt(form.quantity.value));
+            formData.append('expirationDate', form.expirationDate.value);
+            formData.append('description', form.description.value);
+            formData.append('origin', form.origin.value);
+            formData.append('impact', form.impact.value);
+
+            if (selectedImage) {
+                formData.append('image', selectedImage);
+            }
+
+            try {
+                const token = localStorage.getItem('token');
+
+                const response = await fetch('http://localhost:6300/api/products', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: formData
+                });
+
+                if (response.ok) {
+                    messageEl.textContent = 'Produit publié avec succès !';
+                    messageEl.className = 'success';
+                    form.reset();
+                    imagePreview.style.display = 'none';
+                    selectedImage = null;
+                } else {
+                    const data = await response.json();
+                    messageEl.textContent = 'Erreur : ' + (data.message || 'Impossible de publier le produit.');
+                    messageEl.className = 'error';
+                }
+            } catch (error) {
+                messageEl.textContent = 'Erreur réseau. Veuillez réessayer.';
+                messageEl.className = 'error';
+                console.error(error);
+            }
+        });
+    </script>
+</body>
+
+</html>

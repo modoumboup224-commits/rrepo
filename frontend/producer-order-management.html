@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestion des commandes - Producteur</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <h1>Gestion des commandes</h1>
+    <table id="ordersTable">
+        <thead>
+            <tr>
+                <th>ID Commande</th>
+                <th>Produit</th>
+                <th>Quantité</th>
+                <th>Client</th>
+                <th>Date</th>
+                <th>Statut</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Commandes chargées dynamiquement -->
+        </tbody>
+    </table>
+    <p id="message"></p>
+
+    <script>
+        const ordersTableBody = document.querySelector('#ordersTable tbody');
+        const messageEl = document.getElementById('message');
+
+        async function fetchOrders() {
+            try {
+                const response = await fetch('/api/orders/producer', {
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('token') // Assumes token stored in localStorage
+                    }
+                });
+                if (!response.ok) {
+                    throw new Error('Erreur lors de la récupération des commandes');
+                }
+                const orders = await response.json();
+                renderOrders(orders);
+            } catch (error) {
+                messageEl.textContent = error.message;
+                messageEl.style.color = 'red';
+            }
+        }
+
+        function renderOrders(orders) {
+            ordersTableBody.innerHTML = '';
+            if (orders.length === 0) {
+                ordersTableBody.innerHTML = '<tr><td colspan="7">Aucune commande trouvée.</td></tr>';
+                return;
+            }
+            orders.forEach(order => {
+                order.products.forEach(product => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${order._id}</td>
+                        <td>${product.name}</td>
+                        <td>${product.quantity}</td>
+                        <td>Utilisateur</td> <!-- Client info not available in order -->
+                        <td>${new Date(order.date).toLocaleDateString()}</td>
+                        <td>${order.status}</td>
+                        <td>
+                            <button onclick="updateStatus('${order._id}', 'pending')">En cours</button>
+                            <button onclick="updateStatus('${order._id}', 'shipped')">Livrée</button>
+                            <button onclick="updateStatus('${order._id}', 'cancelled')">Annulée</button>
+                        </td>
+                    `;
+                    ordersTableBody.appendChild(tr);
+                });
+            });
+        }
+
+        // Initialisation
+        fetchOrders();
+
+        function updateStatus(orderId, newStatus) {
+            // Call API to update order status
+            fetch(`/api/orders/${orderId}/status`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                },
+                body: JSON.stringify({ status: newStatus })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Erreur lors de la mise à jour du statut');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    messageEl.textContent = data.message;
+                    messageEl.style.color = 'green';
+                    fetchOrders(); // Refresh orders
+                })
+                .catch(error => {
+                    messageEl.textContent = error.message;
+                    messageEl.style.color = 'red';
+                });
+        }
+    </script>
+</body>
+
+</html>

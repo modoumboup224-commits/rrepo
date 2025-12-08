@@ -1,0 +1,8 @@
+option batch abort
+option confirm off
+open ftp://eq8a66.ftp.infomaniak.com
+user eq8a66_temp_1
+cd /www
+lcd deploy-ready
+synchronize remote -delete
+exit

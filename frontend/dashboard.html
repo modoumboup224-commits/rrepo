@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Tableau de bord</title>
+    <style>
+        body {
+            background-color: #90EE90;
+            /* Light green color */
+            background-image: none;
+            min-height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: -1;
+        }
+
+        .container,
+        h1,
+        section {
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            color: #26331a;
+        }
+
+        section {
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        input {
+            padding: 5px;
+            width: 300px;
+        }
+
+        button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #26331a;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #081303;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #26331a;
+            color: white;
+        }
+
+        .stats-container {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            flex: 1;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #26331a;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Tableau de bord</h1>
+
+    <section id="consumer-dashboard" style="display: none;">
+        <h2>Mes commandes</h2>
+        <table id="orders-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Date</th>
+                    <th>Statut</th>
+                    <th>Total (€)</th>
+                    <th>Commentaire</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Commandes chargées ici -->
+            </tbody>
+        </table>
+        <p id="no-orders-msg">Vous n'avez pas encore de commandes.</p>
+
+        <h3>Statistiques personnelles</h3>
+        <p>Empreinte carbone estimée : <span id="carbon-footprint">0</span> kg CO2</p>
+        <p>Économies réalisées : <span id="savings">0</span> €</p>
+    </section>
+
+    <section id="producer-dashboard" style="display: none;">
+        <h2>Statistiques de ventes</h2>
+        <div class="stats-container">
+            <div class="stat-card">
+                <h3>Ventes du mois</h3>
+                <div class="stat-value" id="monthly-sales">0</div>
+                <p>€</p>
+            </div>
+            <div class="stat-card">
+                <h3>Commandes traitées</h3>
+                <div class="stat-value" id="orders-processed">0</div>
+                <p>Ce mois-ci</p>
+            </div>
+            <div class="stat-card">
+                <h3>Produits en stock</h3>
+                <div class="stat-value" id="products-in-stock">0</div>
+                <p>références</p>
+            </div>
+        </div>
+
+        <h2>Gestion des produits</h2>
+        <button onclick="location.href='producer-product-publish.html'">Publier un nouveau produit</button>
+        <button onclick="refreshProducts()">Actualiser les produits</button>
+
+        <h2>Gestion des commandes</h2>
+        <button onclick="location.href='producer-order-management.html'">Voir les commandes</button>
+
+        <h2>Recommandations de ventes</h2>
+        <div id="recommendations-loading">Chargement des recommandations...</div>
+        <ul id="sales-recommendations" style="display: none;">
+            <!-- Recommandations chargées ici -->
+        </ul>
+
+        <h2>Segmentation des utilisateurs</h2>
+        <div id="segmentation-loading">Chargement de la segmentation...</div>
+        <ul id="user-segmentation" style="display: none;">
+            <!-- Segmentation chargée ici -->
+        </ul>
+    </section>
+
+    <section id="profile-section">
+        <h2>Gestion du profil</h2>
+        <form id="profile-form">
+            <label for="username">Nom d'utilisateur :</label>
+            <input type="text" id="username" name="username" required />
+
+            <label for="email">Email :</label>
+            <input type="email" id="email" name="email" required />
+
+            <label for="password">Nouveau mot de passe :</label>
+            <input type="password" id="password" name="password" autocomplete="new-password" />
+
+            <button type="submit">Mettre à jour</button>
+        </form>
+        <p id="profile-msg"></p>
+    </section>
+
+    <button id="logout-btn">Déconnexion</button>
+
+    <script>
+        const ordersTableBody = document.querySelector('#orders-table tbody');
+        const noOrdersMsg = document.getElementById('no-orders-msg');
+
+        async function fetchOrders() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/orders', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                if (!response.ok) {
+                    throw new Error('Erreur lors de la récupération des commandes');
+                }
+                const orders = await response.json();
+                return orders;
+            } catch (error) {
+                console.error(error);
+                return [];
+            }
+        }
+
+        async function updateComment(orderId, comment) {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`/api/orders/${orderId}/comment`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ comment })
+                });
+                if (!response.ok) {
+                    throw new Error('Erreur lors de la mise à jour du commentaire');
+                }
+                console.log(`Commentaire pour la commande ${orderId} mis à jour : ${comment}`);
+            } catch (error) {
+                console.error(error);
+                alert('Erreur lors de la mise à jour du commentaire');
+            }
+        }
+
+        function renderOrders(orders) {
+            if (orders.length === 0) {
+                noOrdersMsg.style.display = 'block';
+                ordersTableBody.innerHTML = '';
+            } else {
+                noOrdersMsg.style.display = 'none';
+                ordersTableBody.innerHTML = '';
+                orders.forEach(order => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${order._id}</td>
+                        <td>${new Date(order.date).toLocaleDateString()}</td>
+                        <td>${order.status}</td>
+                        <td>${order.products.reduce((sum, p) => sum + p.price * p.quantity, 0).toFixed(2)}</td>
+                        <td>
+                            <input type="text" value="${order.comment || ''}" placeholder="Ajouter un commentaire" 
+                                onblur="updateComment('${order._id}', this.value)" />
+                        </td>
+                    `;
+                    ordersTableBody.appendChild(tr);
+                });
+            }
+        }
+
+        // Fonctions pour le dashboard producteur
+        async function fetchProducerStats() {
+            try {
+                const token = localStorage.getItem('token');
+                // Pour l'instant, on utilise des valeurs mockées
+                // Plus tard, on pourra appeler des endpoints API pour obtenir les vraies données
+                document.getElementById('monthly-sales').textContent = '1250';
+                document.getElementById('orders-processed').textContent = '24';
+                document.getElementById('products-in-stock').textContent = '15';
+            } catch (error) {
+                console.error('Erreur lors du chargement des statistiques:', error);
+            }
+        }
+
+        async function fetchSalesRecommendations() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/dashboard/sales-recommendations', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                if (!response.ok) {
+                    throw new Error('Erreur lors de la récupération des recommandations');
+                }
+                const data = await response.json();
+                displaySalesRecommendations(data);
+            } catch (error) {
+                console.error('Erreur:', error);
+                document.getElementById('recommendations-loading').textContent = 'Erreur de chargement';
+            }
+        }
+
+        function displaySalesRecommendations(data) {
+            document.getElementById('recommendations-loading').style.display = 'none';
+            const recommendationsList = document.getElementById('sales-recommendations');
+            recommendationsList.style.display = 'block';
+            recommendationsList.innerHTML = '';
+
+            data.recommendations.forEach(rec => {
+                const li = document.createElement('li');
+                li.textContent = rec;
+                recommendationsList.appendChild(li);
+            });
+        }
+
+        async function fetchUserSegmentation() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/dashboard/user-segmentation', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                if (!response.ok) {
+                    throw new Error('Erreur lors de la récupération de la segmentation');
+                }
+                const data = await response.json();
+                displayUserSegmentation(data.segments);
+            } catch (error) {
+                console.error('Erreur:', error);
+                document.getElementById('segmentation-loading').textContent = 'Erreur de chargement';
+            }
+        }
+
+        function displayUserSegmentation(segments) {
+            document.getElementById('segmentation-loading').style.display = 'none';
+            const segmentationList = document.getElementById('user-segmentation');
+            segmentationList.style.display = 'block';
+            segmentationList.innerHTML = '';
+
+            segments.forEach(segment => {
+                const li = document.createElement('li');
+                li.textContent = segment;
+                segmentationList.appendChild(li);
+            });
+        }
+
+        function refreshProducts() {
+            // Pour l'instant, fonction de rafraîchissement mockée
+            alert('Liste des produits actualisée');
+            // Plus tard, on pourra appeler l'API pour obtenir les derniers produits
+        }
+
+        // Gestion profil
+        const profileForm = document.getElementById('profile-form');
+        const profileMsg = document.getElementById('profile-msg');
+
+        profileForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            profileMsg.textContent = '';
+            // Ici appel API pour mise à jour profil
+            profileMsg.textContent = 'Profil mis à jour avec succès (mock)';
+            profileMsg.style.color = 'green';
+        });
+
+        // Déconnexion
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            localStorage.removeItem('token');
+            window.location.href = 'login.html';
+        });
+
+        // Affichage conditionnel du dashboard selon rôle (mock)
+        function showDashboard(role) {
+            if (role === 'consommateur') {
+                document.getElementById('consumer-dashboard').style.display = 'block';
+                document.getElementById('producer-dashboard').style.display = 'none';
+            } else if (role === 'producteur') {
+                document.getElementById('consumer-dashboard').style.display = 'none';
+                document.getElementById('producer-dashboard').style.display = 'block';
+                // Charger les données du dashboard producteur
+                fetchProducerStats();
+                fetchSalesRecommendations();
+                fetchUserSegmentation();
+            }
+        }
+
+        // Fonction pour décoder le token JWT et obtenir le rôle
+        function getUserRoleFromToken(token) {
+            try {
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                return payload.role || 'consommateur';
+            } catch (error) {
+                console.error('Erreur lors du décodage du token:', error);
+                return 'consommateur';
+            }
+        }
+
+        // Fonction pour charger le profil depuis l'API
+        async function loadProfileFromAPI() {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    console.warn('Aucun token trouvé');
+                    return;
+                }
+
+                const response = await fetch('/api/auth/profile', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Erreur lors du chargement du profil');
+                }
+
+                const userData = await response.json();
+                profileForm.username.value = userData.username || '';
+                profileForm.email.value = userData.email || '';
+            } catch (error) {
+                console.error('Erreur lors du chargement du profil:', error);
+            }
+        }
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Déterminer le rôle à partir du token
+            const userRole = getUserRoleFromToken(token);
+
+            // Afficher le dashboard approprié
+            showDashboard(userRole);
+
+            // Charger les commandes
+            const orders = await fetchOrders();
+            renderOrders(orders);
+
+            // Charger le profil
+            await loadProfileFromAPI();
+        });
+    </script>
+</body>
+
+</html>

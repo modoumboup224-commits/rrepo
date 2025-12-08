@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Panier</title>
+    <style>
+        body {
+            background-image: url('images/bg.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: -1;
+        }
+
+        main {
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            color: #26331a;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #26331a;
+            color: white;
+        }
+
+        button {
+            padding: 5px 10px;
+            margin: 0 5px;
+        }
+
+        #total {
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        #message {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        #message.success {
+            color: green;
+        }
+
+        #message.error {
+            color: red;
+        }
+    </style>
+    <script src="https://js.stripe.com/v3/"></script>
+</head>
+
+<body>
+    <!-- Inclusion du header commun -->
+    <div id="header-placeholder"></div>
+
+    <main
+        style="max-width: 900px; margin: 20px auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+        <h1>Mon Panier</h1>
+
+        <section id="product-selection" style="margin-bottom: 20px;">
+            <h2>Sélection des produits</h2>
+            <div id="product-list">
+                <!-- Liste des produits chargée dynamiquement -->
+            </div>
+        </section>
+
+        <table id="cart-table" style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="background-color: #26331a; color: white;">
+                    <th>Produit</th>
+                    <th>Quantité</th>
+                    <th>Prix unitaire (€)</th>
+                    <th>Sous-total (€)</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Produits ajoutés au panier -->
+            </tbody>
+        </table>
+        <div id="total" style="font-weight: bold; margin-top: 20px;">Total: €0.00</div>
+        <button id="checkout-btn"
+            style="margin-top: 10px; padding: 10px 20px; background-color: #26331a; color: white; border: none; border-radius: 4px; cursor: pointer;">Valider
+            la commande</button>
+        <p id="message"></p>
+
+        <section id="payment-section" style="display:none; margin-top:20px;">
+            <h2>Paiement en ligne</h2>
+            <form id="payment-form">
+                <label for="card-number">Numéro de carte :</label><br />
+                <input type="text" id="card-number" name="card-number" placeholder="1234 5678 9012 3456"
+                    required /><br /><br />
+                <label for="expiry-date">Date d'expiration :</label><br />
+                <input type="text" id="expiry-date" name="expiry-date" placeholder="MM/AA" required /><br /><br />
+                <label for="cvv">CVV :</label><br />
+                <input type="text" id="cvv" name="cvv" placeholder="123" required /><br /><br />
+                <button type="submit"
+                    style="padding: 10px 20px; background-color: #26331a; color: white; border: none; border-radius: 4px; cursor: pointer;">Payer</button>
+            </form>
+            <p id="payment-message"></p>
+        </section>
+    </main>
+
+    <!-- Inclusion du footer commun -->
+    <div id="footer-placeholder"></div>
+
+    <script>
+        const productListDiv = document.getElementById('product-list');
+        const cartTableBody = document.querySelector('#cart-table tbody');
+        const totalEl = document.getElementById('total');
+        const messageEl = document.getElementById('message');
+        const paymentSection = document.getElementById('payment-section');
+        const paymentForm = document.getElementById('payment-form');
+        const paymentMessage = document.getElementById('payment-message');
+
+        let products = [];
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        async function fetchProducts() {
+            try {
+                const response = await fetch('http://localhost:6300/api/products');
+                if (!response.ok) throw new Error('Erreur lors du chargement des produits');
+                products = await response.json();
+                renderProductList();
+            } catch (error) {
+                productListDiv.innerHTML = '<p>Erreur lors du chargement des produits.</p>';
+                console.error(error);
+            }
+        }
+
+        function renderProductList() {
+            productListDiv.innerHTML = '';
+            products.forEach(product => {
+                const productDiv = document.createElement('div');
+                productDiv.className = 'product-item';
+                productDiv.innerHTML = `
+                    <span>${product.name} - €${product.price.toFixed(2)}</span>
+                    <button onclick="addToCart('${product.id}')">Ajouter au panier</button>
+                `;
+                productListDiv.appendChild(productDiv);
+            });
+        }
+
+        function saveCart() {
+            localStorage.setItem('cart', JSON.stringify(cart));
+        }
+
+        function calculateTotal() {
+            return cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+        }
+
+        function renderCart() {
+            cartTableBody.innerHTML = '';
+            if (cart.length === 0) {
+                cartTableBody.innerHTML = '<tr><td colspan="5">Votre panier est vide.</td></tr>';
+                totalEl.textContent = 'Total: €0.00';
+                paymentSection.style.display = 'none';
+                return;
+            }
+            cart.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${item.name}</td>
+                    <td>${item.quantity}</td>
+                    <td>€${item.price.toFixed(2)}</td>
+                    <td>€${(item.price * item.quantity).toFixed(2)}</td>
+                    <td>
+                        <button onclick="changeQuantity(${index}, 1)">+</button>
+                        <button onclick="changeQuantity(${index}, -1)">-</button>
+                        <button onclick="removeItem(${index})">Supprimer</button>
+                    </td>
+                `;
+                cartTableBody.appendChild(tr);
+            });
+            totalEl.textContent = 'Total: €' + calculateTotal().toFixed(2);
+            paymentSection.style.display = 'block';
+        }
+
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+            const cartItem = cart.find(item => item.id === productId);
+            if (cartItem) {
+                cartItem.quantity++;
+            } else {
+                cart.push({ id: product.id, name: product.name, price: product.price, quantity: 1 });
+            }
+            saveCart();
+            renderCart();
+        }
+
+        function changeQuantity(index, delta) {
+            cart[index].quantity += delta;
+            if (cart[index].quantity <= 0) {
+                cart.splice(index, 1);
+            }
+            saveCart();
+            renderCart();
+        }
+
+        function removeItem(index) {
+            cart.splice(index, 1);
+            saveCart();
+            renderCart();
+        }
+
+        document.getElementById('checkout-btn').addEventListener('click', () => {
+            if (cart.length === 0) {
+                messageEl.textContent = 'Votre panier est vide.';
+                messageEl.className = 'error';
+                return;
+            }
+            paymentSection.style.display = 'block';
+            messageEl.textContent = '';
+        });
+
+        paymentForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            paymentMessage.textContent = '';
+            try {
+                const response = await fetch('http://localhost:6300/api/payment/create-checkout-session', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ items: cart })
+                });
+                const data = await response.json();
+                console.log('Session ID reçue:', data.id);
+                if (data.id) {
+                    const stripe = Stripe('pk_test_51RofkvDU5fVyqKaZvzRvrLQoF7TBi9e8JKzmwaT4J5nEVyl0XNzhelMi2QYykeSxrvWAUTgXncR7UR0LkRj3B3uy00mf9SgQj4');
+                    await stripe.redirectToCheckout({ sessionId: data.id });
+                } else {
+                    paymentMessage.textContent = 'Erreur lors de la création de la session de paiement.';
+                    paymentMessage.style.color = 'red';
+                }
+            } catch (error) {
+                paymentMessage.textContent = 'Erreur lors du paiement.';
+                paymentMessage.style.color = 'red';
+                console.error('Payment error:', error);
+            }
+        });
+
+        // Initialisation
+        fetchProducts();
+        renderCart();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,58 @@
+/* Background image styles for all pages */
+body {
+    background-image: url('../images/bg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+}
+
+/* Overlay pour améliorer la lisibilité du contenu */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    /* Overlay semi-transparent */
+    z-index: -1;
+}
+
+/* Assurez-vous que le contenu principal est au-dessus de l'overlay */
+main,
+.container,
+.content-wrapper {
+    position: relative;
+    z-index: 1;
+}
+
+/* Styles spécifiques pour différentes pages */
+.page-login {
+    background-image: url('../images/bg-auth.jpg');
+}
+
+.page-register {
+    background-image: url('../images/bg-register.jpg');
+}
+
+.page-dashboard {
+    background-image: url('../images/bg-dashboard.jpg');
+}
+
+.page-products {
+    background-image: url('../images/bg-products.jpg');
+}
+
+.page-cart {
+    background-image: url('../images/bg-cart.jpg');
+}
+
+/* Responsive background */
+@media (max-width: 768px) {
+    body {
+        background-attachment: scroll;
+    }
+}
