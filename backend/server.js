@@ -22,7 +22,10 @@ console.log("MONGO_URI:", process.env.MONGO_URI)  // Log MONGO_URI to verify dot
 console.log("Server will listen on port:", PORT);  // Debug log for port
 
 // Middlewares
-app.use(cors())
+app.use(cors({
+    origin: ["https://ton-site.netlify.app"], // Remplace par ton domaine Netlify exact
+    credentials: true
+}))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
