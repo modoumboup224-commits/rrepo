@@ -4,7 +4,7 @@ const Producteur = require('../models/Producteur');
 // MongoDB connection
 const connectDB = async () => {
     try {
-        await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/greencard', {
+        await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/greencart', {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         });

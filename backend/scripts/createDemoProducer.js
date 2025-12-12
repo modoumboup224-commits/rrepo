@@ -5,7 +5,7 @@ const Product = require('../models/Product');
 
 async function createDemoProducer() {
     try {
-        await mongoose.connect('mongodb://localhost:27017/greencard');
+        await mongoose.connect('mongodb://localhost:27017/greencart');
 
         // Vérifier si le producteur existe déjà
         const existingUser = await User.findOne({ email: 'demo.producteur@greencard.local' });

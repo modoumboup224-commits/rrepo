@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Producteur = require('../models/Producteur');
 
 // Connexion à MongoDB
-mongoose.connect('mongodb://localhost:27017/greencard', {
+mongoose.connect('mongodb://localhost:27017/greencart', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });

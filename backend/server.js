@@ -106,18 +106,22 @@ app.use('/api/dashboard', dashboardRoutes)
 let server;
 
 async function startServer() {
-    try {
-        // Utiliser la base de données définie dans MONGO_URI
-        const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/greencard';
-        await mongoose.connect(mongoUri);
-        console.log("✅ Connecté à MongoDB");
+    // Utiliser la base de données définie dans MONGO_URI
+    const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/greencart';
 
-        server = app.listen(PORT, () => {
-            console.log(`🚀 Serveur démarré : http://localhost:${PORT}`);
+    mongoose.connect(mongoUri, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    })
+        .then(() => {
+            console.log("MongoDB connected!");
+            server = app.listen(PORT, () => {
+                console.log(`🚀 Serveur démarré : http://localhost:${PORT}`);
+            });
+        })
+        .catch(err => {
+            console.log("Erreur MongoDB :", err);
         });
-    } catch (err) {
-        console.error("Erreur MongoDB :", err);
-    }
 }
 
 startServer();

@@ -5,7 +5,7 @@ const Product = require('../models/Product');
 
 async function createDemoOrder() {
     try {
-        await mongoose.connect('mongodb://localhost:27017/greencard');
+        await mongoose.connect('mongodb://localhost:27017/greencart');
 
         // Récupérer l'utilisateur producteur demo
         const user = await User.findOne({ email: 'demo.producteur@greencard.local' });

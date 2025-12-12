@@ -85,7 +85,7 @@ async function seedGreencardProducts() {
 
     try {
         // Connexion à MongoDB
-        const mongoUri = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/greencard';
+        const mongoUri = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/greencart';
         await mongoose.connect(mongoUri);
 
         console.log('✅ Connecté à MongoDB - Base:', mongoose.connection.db.databaseName);

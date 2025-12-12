@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 
 // Connexion à MongoDB
-mongoose.connect('mongodb://localhost:27017/greencard', {
+mongoose.connect('mongodb://localhost:27017/greencart', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });

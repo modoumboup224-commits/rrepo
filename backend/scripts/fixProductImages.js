@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
-const Producteur = require('../models/Producteur');
-const fs = require('fs');
-const path = require('path');
+const Product = require('../models/Product');
 
 // Connexion à MongoDB
 mongoose.connect('mongodb://localhost:27017/greencart', {
@@ -9,9 +7,9 @@ mongoose.connect('mongodb://localhost:27017/greencart', {
     useUnifiedTopology: true
 });
 
-const updateProducerImagesFinal = async () => {
+const fixProductImages = async () => {
     try {
-        console.log('🔍 Mise à jour finale des images des producteurs...');
+        console.log('🔍 Mise à jour des images des produits...');
 
         // Images disponibles
         const availableImages = [
@@ -43,30 +41,30 @@ const updateProducerImagesFinal = async () => {
             '/images/blackbox2/111.jpg'
         ];
 
-        // 1. Récupérer tous les producteurs
-        const producteurs = await Producteur.find({});
-        console.log(`📊 ${producteurs.length} producteurs trouvés`);
+        // 1. Récupérer tous les produits
+        const products = await Product.find({});
+        console.log(`📊 ${products.length} produits trouvés`);
 
         let updatedCount = 0;
 
-        // 2. Mettre à jour chaque producteur avec une image aléatoire
-        for (let i = 0; i < producteurs.length; i++) {
-            const producteur = producteurs[i];
+        // 2. Mettre à jour chaque produit avec une image aléatoire
+        for (let i = 0; i < products.length; i++) {
+            const product = products[i];
             const randomImage = availableImages[i % availableImages.length];
 
             // Utiliser updateOne pour éviter les problèmes de validation
-            await Producteur.updateOne(
-                { _id: producteur._id },
+            await Product.updateOne(
+                { _id: product._id },
                 {
-                    photoUrl: randomImage,
-                    photoAlt: `Photo de ${producteur.nom}`
+                    imageUrl: randomImage,
+                    images: [randomImage]
                 }
             );
             updatedCount++;
-            console.log(`✅ ${producteur.nom}: ${producteur.photoUrl}`);
+            console.log(`✅ ${product.name}: ${randomImage}`);
         }
 
-        console.log(`\n📋 Résumé: ${updatedCount} producteurs mis à jour avec de nouvelles images`);
+        console.log(`\n📋 Résumé: ${updatedCount} produits mis à jour avec de nouvelles images`);
 
     } catch (error) {
         console.error('❌ Erreur:', error);
@@ -76,4 +74,4 @@ const updateProducerImagesFinal = async () => {
     }
 };
 
-updateProducerImagesFinal();
+fixProductImages();

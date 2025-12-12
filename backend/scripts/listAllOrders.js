@@ -3,7 +3,7 @@ const Order = require('../models/Order');
 
 async function listAllOrders() {
     try {
-        await mongoose.connect('mongodb://localhost:27017/your_database_name');
+        await mongoose.connect('mongodb://localhost:27017/greencart');
 
         const orders = await Order.find({});
         console.log('All orders in database:', orders);
