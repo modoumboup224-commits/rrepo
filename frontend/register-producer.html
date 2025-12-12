@@ -82,7 +82,7 @@
             const localisation = document.getElementById('localisation').value;
 
             try {
-                const res = await fetch('http://localhost:6300/api/auth/register-producteur', {
+                const res = await fetch(`${API_BASE_URL}/api/auth/register-producteur`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username, email, password, nom, localisation }),

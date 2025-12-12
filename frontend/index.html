@@ -259,6 +259,7 @@
                     'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
         })(window, document, 'script', 'dataLayer', 'GTM-5MF7C9TP');</script>
     <!-- End Google Tag Manager -->
+    <script src="js/config.js"></script>
 </head>
 
 <body>
@@ -348,10 +349,11 @@
         </div>
     </section>
 
+    <script src="js/config.js"></script>
     <script>
         async function fetchProducts(filters = {}) {
             const queryParams = new URLSearchParams(filters);
-            const response = await fetch('http://localhost:6300/api/products?' + queryParams.toString());
+            const response = await fetch(`${API_BASE_URL}/api/products?` + queryParams.toString());
             const products = await response.json();
             return products;
         }
@@ -370,7 +372,7 @@
                 productDiv.innerHTML = `
                     <a href="product-details.html?id=${product._id}" style="text-decoration: none; color: inherit;">
                         <h3>${product.name}</h3>
-                        <img src="${product.imageUrl && product.imageUrl.startsWith('http') ? product.imageUrl : 'http://localhost:6300' + (product.imageUrl || '/images/default-product.jpg')}" alt="${product.name}" style="max-width: 200px; max-height: 200px; object-fit: cover; margin-bottom: 10px;" />
+                        <img src="${product.imageUrl && product.imageUrl.startsWith('http') ? product.imageUrl : API_BASE_URL + (product.imageUrl || '/images/default-product.jpg')}" alt="${product.name}" style="max-width: 200px; max-height: 200px; object-fit: cover; margin-bottom: 10px;" />
                         <p>Catégorie: ${product.category}</p>
                         <p>Région: ${product.region}</p>
                         <p>Prix: €${product.price.toFixed(2)}</p>
@@ -403,7 +405,7 @@
         }
 
         async function fetchProducteurs() {
-            const response = await fetch('http://localhost:6300/api/producteurs');
+            const response = await fetch(`${API_BASE_URL}/api/producteurs`);
             const producteurs = await response.json();
             return producteurs;
         }
@@ -420,12 +422,12 @@
                 producteurDiv.className = 'product-item';
 
                 // Utiliser l'URL de la photo du producteur si elle existe, sinon image par défaut
-                const imageUrl = producteur.photoUrl || 'http://localhost:6300/images/default-producer.jpg';
+                const imageUrl = producteur.photoUrl || `${API_BASE_URL}/images/default-producer.jpg`;
 
                 producteurDiv.innerHTML = `
                     <a href="producer-details.html?id=${producteur._id}" style="text-decoration: none; color: inherit;">
                         <h3>${producteur.nom}</h3>
-                        <img src="${imageUrl}" alt="${producteur.nom}" style="max-width: 200px; max-height: 200px; object-fit: cover; margin-bottom: 10px;" onerror="this.src='http://localhost:6300/images/default-producer.jpg'" />
+                        <img src="${imageUrl}" alt="${producteur.nom}" style="max-width: 200px; max-height: 200px; object-fit: cover; margin-bottom: 10px;" onerror="this.src='${API_BASE_URL}/images/default-producer.jpg'" />
                         <p>Localisation: ${producteur.localisation}</p>
                     </a>
                 `;

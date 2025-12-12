@@ -171,6 +171,7 @@
     <!-- Inclusion du footer commun -->
     <div id="footer-placeholder"></div>
 
+    <script src="js/config.js"></script>
     <script>
         // Chargement dynamique du header et footer
         async function loadHTML(id, url) {
@@ -189,7 +190,7 @@
 
         async function fetchProducerDetails(producerId) {
             try {
-                const response = await fetch('/api/producteurs/' + producerId);
+                const response = await fetch(`${API_BASE_URL}/api/producteurs/` + producerId);
                 if (!response.ok) {
                     throw new Error('Producteur non trouvé');
                 }
@@ -203,7 +204,7 @@
 
         async function fetchProducerProducts(producerId) {
             try {
-                const response = await fetch(`/api/products?producer=${producerId}&limit=6`);
+                const response = await fetch(`${API_BASE_URL}/api/products?producer=${producerId}&limit=6`);
                 if (!response.ok) {
                     throw new Error('Produits non trouvés');
                 }

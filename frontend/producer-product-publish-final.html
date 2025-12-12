@@ -23,7 +23,10 @@
         .top-page {
             position: relative;
             z-index: 10;
-        }d'
+        }
+
+        d'
+
 
         .header {
             display: flex;
@@ -211,6 +214,7 @@
             color: #d32f2f;
         }
     </style>
+    <script src="js/config.js"></script>
 </head>
 
 <body>
@@ -378,7 +382,7 @@
             try {
                 const token = localStorage.getItem('token');
 
-                const response = await fetch('http://localhost:6300/api/products', {
+                const response = await fetch(`${API_BASE_URL}/api/products`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`

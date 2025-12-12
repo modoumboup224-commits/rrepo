@@ -83,6 +83,7 @@
     <!-- Inclusion du footer commun -->
     <div id="footer-placeholder"></div>
 
+    <script src="js/config.js"></script>
     <script>
         // Chargement dynamique du header et footer
         async function loadHTML(id, url) {
@@ -101,7 +102,7 @@
 
         async function fetchProductDetails(productId) {
             try {
-                const response = await fetch('/api/products/' + productId);
+                const response = await fetch(`${API_BASE_URL}/api/products/` + productId);
                 if (!response.ok) {
                     throw new Error('Produit non trouvé');
                 }
@@ -138,7 +139,7 @@
 
             // Si pas d'images, utiliser l'image unique ou une image par défaut
             if (images.length === 0) {
-                const imageUrl = product.imageUrl || 'images/default-product.jpg';
+                const imageUrl = product.imageUrl || `${API_BASE_URL}/images/default-product.jpg`;
                 mainImage.src = imageUrl;
                 mainImage.alt = product.name || 'Image du produit';
                 imageGallery.style.display = 'none';
