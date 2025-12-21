@@ -5,14 +5,15 @@ const Product = require('../models/Product');
 
 async function createDemoProducer() {
     try {
-        await mongoose.connect('mongodb://localhost:27017/greencart');
+        await mongoose.connect('mongodb+srv://modemodou0:hFlZ3Lrpv584eCVe@cluster0.vjyuysh.mongodb.net/greencart');
 
-        // Vérifier si le producteur existe déjà
+        // Supprimer le producteur existant s'il y en a un
         const existingUser = await User.findOne({ email: 'demo.producteur@greencard.local' });
         if (existingUser) {
-            console.log('Producteur demo existe déjà');
-            await mongoose.disconnect();
-            return;
+            console.log('Suppression du producteur demo existant...');
+            await Producteur.deleteMany({ userId: existingUser._id });
+            await User.deleteOne({ _id: existingUser._id });
+            console.log('Producteur demo supprimé');
         }
 
         // 1. Créer l'utilisateur
@@ -27,6 +28,7 @@ async function createDemoProducer() {
 
         // 2. Créer le profil producteur
         const producteur = new Producteur({
+            userId: savedUser._id,
             nom: 'Ferme Demo Bio',
             localisation: 'Bordeaux, France',
             produits: []

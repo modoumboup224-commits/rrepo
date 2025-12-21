@@ -85,17 +85,38 @@ async function seedGreencardProducts() {
 
     try {
         // Connexion à MongoDB
-        const mongoUri = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/greencart';
+        const mongoUri = 'mongodb+srv://modemodou0:hFlZ3Lrpv584eCVe@cluster0.vjyuysh.mongodb.net/greencart';
         await mongoose.connect(mongoUri);
 
         console.log('✅ Connecté à MongoDB - Base:', mongoose.connection.db.databaseName);
 
-        // Trouver le producteur demo
-        const demoProducer = await Producteur.findOne({ nom: 'Ferme Demo Bio' });
+        // Trouver ou créer le producteur demo
+        let demoProducer = await Producteur.findOne({ nom: 'Ferme Demo Bio' });
         if (!demoProducer) {
-            throw new Error('Producteur demo non trouvé. Veuillez exécuter createDemoProducer.js d\'abord.');
+            console.log('Producteur demo non trouvé, création en cours...');
+            // Créer un utilisateur d'abord
+            const User = require('../models/User');
+            const user = new User({
+                username: 'producteur_demo',
+                email: 'demo@greencard.local',
+                password: '$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password hashé pour "password"
+                role: 'producteur'
+            });
+            const savedUser = await user.save();
+            console.log('✅ Utilisateur demo créé:', savedUser.username);
+
+            // Créer le producteur
+            demoProducer = new Producteur({
+                userId: savedUser._id,
+                nom: 'Ferme Demo Bio',
+                localisation: 'Bordeaux, France',
+                produits: []
+            });
+            await demoProducer.save();
+            console.log('✅ Producteur demo créé:', demoProducer.nom);
+        } else {
+            console.log('✅ Producteur demo trouvé:', demoProducer.nom);
         }
-        console.log('✅ Producteur demo trouvé:', demoProducer.nom);
 
         // Ajouter producerId aux produits
         const productsWithProducer = demoProducts.map(product => ({

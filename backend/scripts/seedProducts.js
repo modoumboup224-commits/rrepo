@@ -33,7 +33,8 @@ const products = [
 
 async function seed() {
     try {
-        await mongoose.connect(process.env.MONGO_URI);
+        const mongoUri = 'mongodb+srv://modemodou0:hFlZ3Lrpv584eCVe@cluster0.vjyuysh.mongodb.net/greencart';
+        await mongoose.connect(mongoUri);
         console.log('Connected to MongoDB');
 
         await Product.deleteMany({});
