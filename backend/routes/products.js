@@ -1,8 +1,9 @@
 
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const Product = require('../models/Product');
-const verifyToken = require('../middleware/auth');
+import mongoose from 'mongoose';
+import Product from '../models/Product.js';
+import verifyToken from '../middleware/auth.js';
 
 
 // GET /products - Get products with optional filters
@@ -29,7 +30,6 @@ router.get('/', async (req, res) => {
             if (expirationAfter) filter.expirationDate.$gte = new Date(expirationAfter);
         }
         if (producer) {
-            const mongoose = require('mongoose');
             filter.producerId = new mongoose.Types.ObjectId(producer);
         }
 
@@ -181,4 +181,4 @@ router.delete('/:id', verifyToken, async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

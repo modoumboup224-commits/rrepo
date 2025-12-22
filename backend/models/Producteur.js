@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const producteurSchema = new mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, unique: true },
@@ -10,4 +10,4 @@ const producteurSchema = new mongoose.Schema({
     isProfileComplete: { type: Boolean, default: false }
 });
 
-module.exports = mongoose.model('Producteur', producteurSchema);
+export default mongoose.model('Producteur', producteurSchema);
