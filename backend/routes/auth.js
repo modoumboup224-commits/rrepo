@@ -1,9 +1,9 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
-const Producteur = require('../models/Producteur');
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import User from '../models/User.js';
+import Producteur from '../models/Producteur.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'secret123'; // Met une vraie clé dans ton .env
 

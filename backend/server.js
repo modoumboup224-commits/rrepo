@@ -1,33 +1,32 @@
-'use strict'
+import express from "express";
+import mongoose from "mongoose";
+import cors from "cors";
+import path from "path";
+import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
+import stripe from 'stripe';
+import swaggerUi from 'swagger-ui-express';
+import swaggerJsdoc from 'swagger-jsdoc';
 
-/*eslint-env node,es6*/
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-const express = require('express')
-const mongoose = require('mongoose')
-const cors = require('cors')
-const path = require('path')
-require('dotenv').config({ path: path.join(__dirname, '.env') })
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const swaggerUi = require('swagger-ui-express');
-const swaggerJsdoc = require('swagger-jsdoc');
+dotenv.config({ path: path.join(__dirname, '.env') });
+
+const stripeInstance = stripe(process.env.STRIPE_SECRET_KEY);
 
 
 console.log("Clé Stripe secrète utilisée :", process.env.STRIPE_SECRET_KEY);
 
 
-const app = express()
-const PORT = process.env.PORT || 6300
+const app = express();
 
-console.log("MONGO_URI:", process.env.MONGO_URI)  // Log MONGO_URI to verify dotenv loading
-console.log("Server will listen on port:", PORT);  // Debug log for port
-
-// Middlewares
+// 🔥 CORS ICI ET NULLE PART AILLEURS
 app.use(cors({
-    origin: ["https://resilient-greencard.netlify.app", "https://rrepo-ltrh.vercel.app"], // Domaines autorisés: Netlify et Vercel
-    credentials: true
-}))
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
+    origin: "https://rrepo-vu83.vercel.app"
+}));
+
+app.use(express.json());
 
 // Middleware temporaire pour lister les fichiers statiques accessibles
 app.use((req, res, next) => {
@@ -42,16 +41,16 @@ app.use('/images', express.static(path.join(__dirname, '../images')))
 app.use(express.static(path.join(__dirname, '../frontend')))
 
 // Import de la page d'accueil HTML
-const genererPageAccueil = require('./server-get.js')
+const genererPageAccueil = (await import('./server-get.js')).default
 
-const authRoutes = require('./routes/auth') // auth.js dans /routes
-const authProducteurRoutes = require('./routes/auth-producteur') // Nouvelle route
-const productRoutes = require('./routes/products')
-const producteurRoutes = require('./routes/producteurs')
-const paymentRoutes = require('./routes/payment')
-const webhookRoutes = require('./routes/webhook')
-const ordersRoutes = require('./routes/orders')
-const dashboardRoutes = require('./routes/dashboard')
+const authRoutes = (await import('./routes/auth.js')).default // auth.js dans /routes
+const authProducteurRoutes = (await import('./routes/auth-producteur.js')).default // Nouvelle route
+const productRoutes = (await import('./routes/products.js')).default
+const producteurRoutes = (await import('./routes/producteurs.js')).default
+const paymentRoutes = (await import('./routes/payment.js')).default
+const webhookRoutes = (await import('./routes/webhook.js')).default
+const ordersRoutes = (await import('./routes/orders.js')).default
+const dashboardRoutes = (await import('./routes/dashboard.js')).default
 
 // Swagger configuration
 const swaggerOptions = {
@@ -106,57 +105,24 @@ app.use('/api/orders', ordersRoutes)
 app.use('/api/dashboard', dashboardRoutes)
 
 // Connexion DB
-let server;
+const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/greencart';
 
-async function startServer() {
-    // Utiliser la base de données définie dans MONGO_URI
-    const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/greencart';
-
-    mongoose.connect(mongoUri, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
+mongoose.connect(mongoUri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+})
+    .then(() => {
+        console.log("MongoDB connected!");
     })
-        .then(() => {
-            console.log("MongoDB connected!");
-            server = app.listen(PORT, () => {
-                console.log(`🚀 Serveur démarré : http://localhost:${PORT}`);
-            });
-        })
-        .catch(err => {
-            console.log("Erreur MongoDB :", err);
-        });
-}
+    .catch(err => {
+        console.log("Erreur MongoDB :", err);
+    });
 
-startServer();
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log("Server running on port", PORT);
+});
 
-module.exports = {
-    app,
-    getServer: () => server,
-    closeServer: async () => {
-        if (server) {
-            await mongoose.connection.close();
-            server.close();
-        }
-    }
-};
+export { app };
 
-const User = require('./models/User')
-
-async function testCreationUtilisateur() {
-    const user = new User({
-        username: 'testuser',
-        email: 'test@test.com',
-        password: 'passwordhashéplus-tard',
-        role: 'consommateur'
-    })
-
-    try {
-        await user.save()
-        console.log('✅ Utilisateur de test créé')
-    } catch (err) {
-        console.error('❌ Erreur création user :', err.message)
-    }
-}
-
-// Optionally call the test function here to create the test user on server start
-// testCreationUtilisateur()
+// Optionally, you can add test user creation here if needed
