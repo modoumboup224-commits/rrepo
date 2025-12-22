@@ -23,7 +23,7 @@ console.log("Server will listen on port:", PORT);  // Debug log for port
 
 // Middlewares
 app.use(cors({
-    origin: ["https://resilient-greencard.netlify.app"], // Domaine Netlify exact
+    origin: ["https://resilient-greencard.netlify.app", "https://rrepo-ltrh.vercel.app"], // Domaines autorisés: Netlify et Vercel
     credentials: true
 }))
 app.use(express.json())
