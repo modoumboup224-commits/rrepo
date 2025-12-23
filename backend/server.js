@@ -23,16 +23,8 @@ const app = express();
 
 // 🔥 CORS ICI ET NULLE PART AILLEURS
 app.use(cors({
-    origin: true, // Allow all origins
-    credentials: true, // Allow credentials
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
-}));
-app.options('*', cors({
-    origin: true,
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
 }));
 
 app.use(express.json());
@@ -46,11 +38,9 @@ app.use((req, res, next) => {
 // Servir le dossier images statiques
 app.use('/images', express.static(path.join(__dirname, '../images')))
 
-// Servir le dossier frontend statique
-app.use(express.static(path.join(__dirname, '../frontend')))
 
-// Import de la page d'accueil HTML
-const genererPageAccueil = (await import('./server-get.js')).default
+
+
 
 const authRoutes = (await import('./routes/auth.js')).default // auth.js dans /routes
 const authProducteurRoutes = (await import('./routes/auth-producteur.js')).default // Nouvelle route
@@ -95,11 +85,7 @@ const swaggerOptions = {
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
-// Routes
-app.get('/', async (req, res) => {
-    const indexHtml = await genererPageAccueil()
-    res.send(indexHtml)
-})
+
 
 // Swagger documentation route
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
