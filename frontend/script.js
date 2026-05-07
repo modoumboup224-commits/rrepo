@@ -17,6 +17,7 @@ function renderProducts(products) {
         console.log('Image URL:', product.imageUrl);
         const productDiv = document.createElement('div');
         productDiv.className = 'product-item';
+        const randomStock = typeof product.quantityAvailable === 'number' ? product.quantityAvailable : (Math.floor(Math.random() * 20) + 1);
         productDiv.innerHTML = `
             <a href="product-details.html?id=${product._id}" style="text-decoration: none; color: inherit;">
                 <h3>${product.name}</h3>
@@ -24,12 +25,24 @@ function renderProducts(products) {
                 <p>Catégorie: ${product.category}</p>
                 <p>Région: ${product.region}</p>
                 <p>Prix: €${product.price.toFixed(2)}</p>
+                <p>Stock : ${randomStock}</p>
                 <p>Date limite: ${new Date(product.expirationDate).toLocaleDateString()}</p>
                 <p>Description: ${product.description || 'N/A'}</p>
                 <p>Origine: ${product.origin || 'N/A'}</p>
                 <p>Impact: ${product.impact || 'N/A'}</p>
             </a>
-            <button onclick="addToCart('${product._id}', '${product.name}', ${product.price})">Ajouter au panier</button>
+
+            <div class="qty-picker" style="display:flex; align-items:center; gap:10px; margin-top:10px;">
+                <button type="button" onclick="changeQty('${product._id}', -1)" style="padding: 6px 10px;">[-]</button>
+                <div>
+                    <div style="font-weight:700;">Quantité</div>
+                    <div style="text-align:center; font-weight:800;"> <span id="qty-${product._id}">1</span></div>
+                    <div style="font-size:12px; opacity:0.9;">Disponible: ${randomStock}</div>
+                </div>
+                <button type="button" onclick="changeQty('${product._id}', 1)" style="padding: 6px 10px;">[+]</button>
+            </div>
+
+            <button onclick="addToCart('${product._id}', '${product.name}', ${product.price}, ${randomStock})" style="margin-top:10px;">Ajouter au panier</button>
         `;
         productList.appendChild(productDiv);
     });
@@ -41,16 +54,32 @@ function saveCart() {
     localStorage.setItem('cart', JSON.stringify(cart));
 }
 
-function addToCart(id, name, price) {
+function addToCart(id, name, price, stock) {
+    const safeStock = typeof stock === 'number' && stock > 0 ? stock : Infinity;
+    const qtyText = document.getElementById(`qty-${id}`);
+    const selectedQty = qtyText ? parseInt(qtyText.textContent, 10) : 1;
+    const quantity = Math.max(1, Math.min(selectedQty, safeStock));
+
     const existingItem = cart.find(item => item.id === id);
     if (existingItem) {
-        existingItem.quantity++;
+        existingItem.quantity = existingItem.quantity + quantity;
     } else {
-        cart.push({ id, name, price, quantity: 1 });
+        cart.push({ id, name, price, quantity });
     }
+
     saveCart();
     alert(name + ' a été ajouté au panier.');
 }
+
+function changeQty(id, delta) {
+    const qtyEl = document.getElementById(`qty-${id}`);
+    if (!qtyEl) return;
+
+    const current = parseInt(qtyEl.textContent, 10) || 1;
+    const next = Math.max(1, current + delta);
+    qtyEl.textContent = String(next);
+}
+
 
 async function fetchProducteurs() {
     const response = await fetch(`${API_BASE_URL}/api/producteurs`);

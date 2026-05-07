@@ -1,0 +1,2 @@
+cookie-banner.js + insertion dans pages principales : index.html, product-details.html, cart.html, dashboard.html, login-updated.html, register-consumer.html, register-producer.html.
+
