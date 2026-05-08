@@ -1,8 +1,10 @@
-const express = require('express');
+import express from 'express';
+import { default as Order } from '../models/Order.js';
+import Product from '../models/Product.js';
+import verifyToken from '../middleware/auth.js';
+
 const router = express.Router();
-const Order = require('../models/Order');
-const Product = require('../models/Product');
-const verifyToken = require('../middleware/auth');
+
 
 // Route pour récupérer l'historique des commandes de l'utilisateur connecté
 router.get('/', verifyToken, async (req, res) => {
@@ -86,4 +88,5 @@ router.put('/:orderId/status', verifyToken, async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;
+

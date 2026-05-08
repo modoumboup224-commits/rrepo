@@ -1,7 +1,10 @@
-const express = require('express');
+import express from 'express';
+import verifyToken from '../middleware/auth.js';
+const { getSalesRecommendations, getUserSegmentation } = await import('../dashboard/recommendations.js');
+
+
 const router = express.Router();
-const verifyToken = require('../middleware/auth');
-const { getSalesRecommendations, getUserSegmentation } = require('../dashboard/recommendations');
+
 
 // Route to get sales recommendations
 router.get('/sales-recommendations', verifyToken, (req, res) => {
@@ -36,4 +39,5 @@ router.get('/recommendations', verifyToken, (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;
+

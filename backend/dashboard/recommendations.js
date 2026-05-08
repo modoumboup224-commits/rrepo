@@ -1,4 +1,5 @@
-const moment = require('moment');
+import moment from 'moment';
+
 
 // Mock sales data by season for products
 const seasonalSales = {
@@ -39,7 +40,5 @@ function getUserSegmentation() {
     return userSegments;
 }
 
-module.exports = {
-    getSalesRecommendations,
-    getUserSegmentation
-};
+export { getSalesRecommendations, getUserSegmentation };
+

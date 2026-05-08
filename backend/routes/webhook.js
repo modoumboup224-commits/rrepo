@@ -1,10 +1,23 @@
-const express = require('express');
+import express from 'express';
+import Stripe from 'stripe';
+const { default: Order } = await import('../models/Order.js');
+
+
+// IMPORTANT: ne pas initialiser Stripe au chargement du module (sinon ça crash si la clé env manque).
 const router = express.Router();
-const Stripe = require('stripe');
-const Order = require('../models/Order');
-const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+function getStripe() {
+    if (!process.env.STRIPE_SECRET_KEY) {
+        // Ne pas crasher au démarrage (Render) si l'env n'est pas encore injectée.
+        // La route échouera clairement au moment d'un webhook.
+        return null;
+    }
+    return Stripe(process.env.STRIPE_SECRET_KEY);
+}
+
+
 
 router.post('/stripe-webhook', express.raw({ type: 'application/json' }), async (req, res) => {
     const sig = req.headers['stripe-signature'];
@@ -12,7 +25,9 @@ router.post('/stripe-webhook', express.raw({ type: 'application/json' }), async 
     let event;
 
     try {
+        const stripe = getStripe();
         event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+
     } catch (err) {
         console.log(`Webhook signature verification failed.`, err.message);
         return res.status(400).send(`Webhook Error: ${err.message}`);
@@ -54,4 +69,5 @@ router.post('/stripe-webhook', express.raw({ type: 'application/json' }), async 
     res.json({ received: true });
 });
 
-module.exports = router;
+export default router;
+
