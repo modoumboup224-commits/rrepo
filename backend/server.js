@@ -46,14 +46,9 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/index.html'));
 });
 
-// Fallback (SPA) 
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/index.html'));
-});
-
-
 
 const authRoutes = (await import('./routes/auth.js')).default // auth.js dans /routes
+
 
 const authProducteurRoutes = (await import('./routes/auth-producteur.js')).default // Nouvelle route
 const productRoutes = (await import('./routes/products.js')).default
