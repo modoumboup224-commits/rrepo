@@ -114,6 +114,12 @@ app.use('/api/dashboard', dashboardRoutes)
 // Connexion DB
 const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/greencart';
 
+const hasEnvMongoUri = !!process.env.MONGO_URI;
+const hasJwtSecret = !!process.env.JWT_SECRET;
+console.log('[startup] MONGO_URI provided via env:', hasEnvMongoUri);
+console.log('[startup] using mongoUri:', mongoUri);
+console.log('[startup] JWT_SECRET provided via env:', hasJwtSecret);
+
 mongoose.connect(mongoUri, {
     useNewUrlParser: true,
     useUnifiedTopology: true
@@ -122,7 +128,7 @@ mongoose.connect(mongoUri, {
         console.log("MongoDB connected!");
     })
     .catch(err => {
-        console.log("Erreur MongoDB :", err);
+        console.error("Erreur MongoDB :", err);
     });
 
 const PORT = process.env.PORT || 3000;
