@@ -1,24 +1,34 @@
-const API_BASE_URL = "https://rrrrepo.onrender.com";
-async function fetchProducts(filters = {}) {
-    const queryParams = new URLSearchParams(filters);
-    const response = await fetch(`${API_BASE_URL}/api/products?` + queryParams.toString());
-    const products = await response.json();
-    return products;
+// Source of truth pour l’API (évite la double-déclaration)
+if (!window.__GREENCARD_API_BASE_URL) {
+    window.__GREENCARD_API_BASE_URL = window.location.origin;
 }
+const API_BASE_URL = window.__GREENCARD_API_BASE_URL; // (source compatible)
+// Protéger contre un chargement multiple du script.js
+if (window.__GREENCARD_HOME_RENDER_READY__) {
+    // Ne pas ré-exécuter la logique si une autre instance du script a déjà initialisé.
+} else {
+    window.__GREENCARD_HOME_RENDER_READY__ = true;
 
-function renderProducts(products) {
-    const productList = document.getElementById('productList');
-    productList.innerHTML = '';
-    if (products.length === 0) {
-        productList.innerHTML = '<p>Aucun produit trouvé.</p>';
-        return;
+    async function fetchProducts(filters = {}) {
+        const queryParams = new URLSearchParams(filters);
+        const response = await fetch(`${API_BASE_URL}/api/products?` + queryParams.toString());
+        const products = await response.json();
+        return products;
     }
-    products.forEach(product => {
-        console.log('Image URL:', product.imageUrl);
-        const productDiv = document.createElement('div');
-        productDiv.className = 'product-item';
-        const randomStock = typeof product.quantityAvailable === 'number' ? product.quantityAvailable : (Math.floor(Math.random() * 20) + 1);
-        productDiv.innerHTML = `
+
+    function renderProducts(products) {
+        const productList = document.getElementById('productList');
+        productList.innerHTML = '';
+        if (products.length === 0) {
+            productList.innerHTML = '<p>Aucun produit trouvé.</p>';
+            return;
+        }
+        products.forEach(product => {
+            console.log('Image URL:', product.imageUrl);
+            const productDiv = document.createElement('div');
+            productDiv.className = 'product-item';
+            const randomStock = typeof product.quantityAvailable === 'number' ? product.quantityAvailable : (Math.floor(Math.random() * 20) + 1);
+            productDiv.innerHTML = `
             <a href="product-details.html?id=${product._id}" style="text-decoration: none; color: inherit;">
                 <h3>${product.name}</h3>
                 <img src="${product.imageUrl && product.imageUrl.startsWith('http') ? product.imageUrl : API_BASE_URL + (product.imageUrl || '/images/default-product.jpg')}" alt="${product.name}" style="max-width: 200px; max-height: 200px; object-fit: cover; margin-bottom: 10px;" />
@@ -44,94 +54,108 @@ function renderProducts(products) {
 
             <button onclick="addToCart('${product._id}', '${product.name}', ${product.price}, ${randomStock})" style="margin-top:10px;">Ajouter au panier</button>
         `;
-        productList.appendChild(productDiv);
-    });
-}
-
-let cart = JSON.parse(localStorage.getItem('cart')) || [];
-
-function saveCart() {
-    localStorage.setItem('cart', JSON.stringify(cart));
-}
-
-function addToCart(id, name, price, stock) {
-    const safeStock = typeof stock === 'number' && stock > 0 ? stock : Infinity;
-    const qtyText = document.getElementById(`qty-${id}`);
-    const selectedQty = qtyText ? parseInt(qtyText.textContent, 10) : 1;
-    const quantity = Math.max(1, Math.min(selectedQty, safeStock));
-
-    const existingItem = cart.find(item => item.id === id);
-    if (existingItem) {
-        existingItem.quantity = existingItem.quantity + quantity;
-    } else {
-        cart.push({ id, name, price, quantity });
+            productList.appendChild(productDiv);
+        });
     }
 
-    saveCart();
-    alert(name + ' a été ajouté au panier.');
-}
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-function changeQty(id, delta) {
-    const qtyEl = document.getElementById(`qty-${id}`);
-    if (!qtyEl) return;
-
-    const current = parseInt(qtyEl.textContent, 10) || 1;
-    const next = Math.max(1, current + delta);
-    qtyEl.textContent = String(next);
-}
-
-
-async function fetchProducteurs() {
-    const response = await fetch(`${API_BASE_URL}/api/producteurs`);
-    const producteurs = await response.json();
-    return producteurs;
-}
-
-function renderProducteurs(producteurs) {
-    const producteurList = document.getElementById('producteurList');
-    producteurList.innerHTML = '';
-    if (producteurs.length === 0) {
-        producteurList.innerHTML = '<p>Aucun producteur trouvé.</p>';
-        return;
+    function saveCart() {
+        localStorage.setItem('cart', JSON.stringify(cart));
     }
-    producteurs.forEach(producteur => {
-        const producteurDiv = document.createElement('div');
-        producteurDiv.className = 'product-item';
 
-        // Utiliser l'URL de la photo du producteur si elle existe, sinon image par défaut
-        const imageUrl = producteur.photoUrl || `${API_BASE_URL}/images/default-producer.jpg`;
+    function addToCart(id, name, price, stock) {
+        const safeStock = typeof stock === 'number' && stock > 0 ? stock : Infinity;
+        const qtyText = document.getElementById(`qty-${id}`);
+        const selectedQty = qtyText ? parseInt(qtyText.textContent, 10) : 1;
+        const quantity = Math.max(1, Math.min(selectedQty, safeStock));
 
-        producteurDiv.innerHTML = `
+        const existingItem = cart.find(item => item.id === id);
+        if (existingItem) {
+            existingItem.quantity = existingItem.quantity + quantity;
+        } else {
+            cart.push({ id, name, price, quantity });
+        }
+
+        saveCart();
+        alert(name + ' a été ajouté au panier.');
+    }
+
+    function changeQty(id, delta) {
+        const qtyEl = document.getElementById(`qty-${id}`);
+        if (!qtyEl) return;
+
+        const current = parseInt(qtyEl.textContent, 10) || 1;
+        const next = Math.max(1, current + delta);
+        qtyEl.textContent = String(next);
+    }
+
+
+    async function fetchProducteurs() {
+        const response = await fetch(`${API_BASE_URL}/api/producteurs`);
+        const producteurs = await response.json();
+        return producteurs;
+    }
+
+    function renderProducteurs(producteurs) {
+        const producteurList = document.getElementById('producteurList');
+        producteurList.innerHTML = '';
+        if (producteurs.length === 0) {
+            producteurList.innerHTML = '<p>Aucun producteur trouvé.</p>';
+            return;
+        }
+        producteurs.forEach(producteur => {
+            const producteurDiv = document.createElement('div');
+            producteurDiv.className = 'product-item';
+
+            // Utiliser l'URL de la photo du producteur si elle existe, sinon image par défaut
+            const imageUrl = producteur.photoUrl || `${API_BASE_URL}/images/default-producer.jpg`;
+
+            producteurDiv.innerHTML = `
             <a href="producer-details.html?id=${producteur._id}" style="text-decoration: none; color: inherit;">
                 <h3>${producteur.nom}</h3>
                 <img src="${imageUrl}" alt="${producteur.nom}" style="max-width: 200px; max-height: 200px; object-fit: cover; margin-bottom: 10px;" onerror="this.src='${API_BASE_URL}/images/default-producer.jpg'" />
                 <p>Localisation: ${producteur.localisation}</p>
             </a>
         `;
-        producteurList.appendChild(producteurDiv);
+            producteurList.appendChild(producteurDiv);
+        });
+    }
+
+    async function applyFilters() {
+        const category = document.getElementById('categoryFilter').value;
+        const region = document.getElementById('regionFilter').value;
+        const maxPrice = document.getElementById('priceFilter').value;
+        const expirationBefore = document.getElementById('expirationFilter').value;
+
+        const filters = {};
+        if (category) filters.category = category;
+        if (region) filters.region = region;
+        if (maxPrice) filters.maxPrice = maxPrice;
+        if (expirationBefore) filters.expirationBefore = expirationBefore;
+
+        const products = await fetchProducts(filters);
+        renderProducts(products);
+
+        const producteurs = await fetchProducteurs();
+        renderProducteurs(producteurs);
+    }
+
+    document.getElementById('applyFilters').addEventListener('click', applyFilters);
+
+    // Initial load (robuste)
+    document.addEventListener('DOMContentLoaded', () => {
+        try {
+            const btn = document.getElementById('applyFilters');
+            const list = document.getElementById('productList');
+            if (!btn) console.warn('[script.js] #applyFilters introuvable');
+            if (!list) console.warn('[script.js] #productList introuvable');
+            applyFilters();
+        } catch (e) {
+            console.error('[script.js] erreur init applyFilters:', e);
+            const list = document.getElementById('productList');
+            if (list) list.innerHTML = `<p style="color:red">Erreur chargement produits: ${e.message}</p>`;
+        }
     });
-}
 
-async function applyFilters() {
-    const category = document.getElementById('categoryFilter').value;
-    const region = document.getElementById('regionFilter').value;
-    const maxPrice = document.getElementById('priceFilter').value;
-    const expirationBefore = document.getElementById('expirationFilter').value;
-
-    const filters = {};
-    if (category) filters.category = category;
-    if (region) filters.region = region;
-    if (maxPrice) filters.maxPrice = maxPrice;
-    if (expirationBefore) filters.expirationBefore = expirationBefore;
-
-    const products = await fetchProducts(filters);
-    renderProducts(products);
-
-    const producteurs = await fetchProducteurs();
-    renderProducteurs(producteurs);
-}
-
-document.getElementById('applyFilters').addEventListener('click', applyFilters);
-
-// Initial load
-applyFilters();
+} // <-- ferme else { ... }

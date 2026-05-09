@@ -269,8 +269,9 @@
             <nav style="display: flex; gap: 20px;">
                 <a href="index.html"
                     style="color: rgb(224, 222, 222); text-decoration: none; font-weight: bold; font-size: 16px;">Accueil</a>
-                <a href="product-details.html"
+                <a href="index.html"
                     style="color: rgb(224, 222, 222); text-decoration: none; font-weight: bold; font-size: 16px;">Catalogue</a>
+
                 <a href="cart.html"
                     style="color: rgb(224, 222, 222); text-decoration: none; font-weight: bold; font-size: 16px;">Panier</a>
                 <a href="dashboard.html"
@@ -340,9 +341,13 @@
             <!-- Products will be dynamically inserted here -->
         </div>
 
-
         <div id="products-container"></div>
+        <p style="text-align:center; margin-top:12px; font-size:14px; opacity:0.85;">
+            Choisissez la quantité directement sur chaque produit avant d’ajouter au panier.
+        </p>
     </section>
+
+
 
     <section class="producteur-catalog">
         <h2>Catalogue de Producteurs</h2>
@@ -367,8 +372,10 @@
     <section class="cta">
         <h3>Rejoignez nous</h3>
         <button onclick="location.href='register-consumer.html'">Je suis consommateur</button>
+        <button onclick="location.href='producteurs.html'">Pourquoi nous rejoindre en tant que producteur</button>
         <button onclick="location.href='register-producer.html'">Je suis producteur</button>
     </section>
+
 
 
     <div id="footer-placeholder"></div>
@@ -382,7 +389,22 @@
     <script src="js/auth-navigation.js"></script>
     <script src="js/config.js"></script>
 
+    <!-- Ensure script.js only loads once to avoid double-declaration crashes -->
     <script>
+        (function () {
+            if (window.__GREENCARD_SCRIPT_JS_LOADED__) {
+                console.warn('[index.html] script.js already loaded; skipping');
+                return;
+            }
+            window.__GREENCARD_SCRIPT_JS_LOADED__ = true;
+        })();
+    </script>
+    <script src="script.js"></script>
+
+    <!-- Assurer un seul chargement côté rendu : pas de script.js dupliqué -->
+
+    <script>
+
         async function loadHTML(id, url) {
             const response = await fetch(url);
             const text = await response.text();
