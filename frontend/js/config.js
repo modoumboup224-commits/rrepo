@@ -1,7 +1,6 @@
 // Configuration pour l'API
-const API_BASE_URL = window.location.hostname === 'localhost'
-    ? 'http://localhost:6300'
-    : 'https://rrrrepo.onrender.com'; // URL locale ou Render du backend
+// Utiliser la même origine que le site courant pour éviter les décalages (port/domaine).
+const API_BASE_URL = window.location.origin;
 
 async function loadProducts() {
     try {
