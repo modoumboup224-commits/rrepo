@@ -1,8 +1,10 @@
 // Source of truth pour l’API (évite la double-déclaration)
+// Base API (production)
+// Remplace l’ancienne logique basée sur window.location.origin (qui pointe vers le front, pas vers le backend Render).
 if (!window.__GREENCARD_API_BASE_URL) {
-    window.__GREENCARD_API_BASE_URL = window.location.origin;
+    window.__GREENCARD_API_BASE_URL = 'https://rrepo.onrender.com';
 }
-const API_BASE_URL = window.__GREENCARD_API_BASE_URL; // (source compatible)
+const API_BASE_URL = window.__GREENCARD_API_BASE_URL;
 // Protéger contre un chargement multiple du script.js
 if (window.__GREENCARD_HOME_RENDER_READY__) {
     // Ne pas ré-exécuter la logique si une autre instance du script a déjà initialisé.
