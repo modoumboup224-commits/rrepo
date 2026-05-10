@@ -44,7 +44,8 @@ router.get('/', async (req, res) => {
         console.log('Products found:', products);
         res.json(products);
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        console.error('[api/products] error:', err);
+        res.status(500).json({ message: 'Erreur serveur sur /api/products', error: err.message });
     }
 });
 

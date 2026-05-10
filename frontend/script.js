@@ -1,6 +1,4 @@
 // Source of truth pour l’API (évite la double-déclaration)
-// Base API (production)
-// Remplace l’ancienne logique basée sur window.location.origin (qui pointe vers le front, pas vers le backend Render).
 if (!window.__GREENCARD_API_BASE_URL) {
     window.__GREENCARD_API_BASE_URL = 'https://rrepo.onrender.com';
 }
@@ -13,9 +11,13 @@ if (window.__GREENCARD_HOME_RENDER_READY__) {
 
     async function fetchProducts(filters = {}) {
         const queryParams = new URLSearchParams(filters);
-        const response = await fetch(`${API_BASE_URL}/api/products?` + queryParams.toString());
-        const products = await response.json();
-        return products;
+        const url = `${API_BASE_URL}/api/products?` + queryParams.toString();
+        const response = await fetch(url);
+        if (!response.ok) {
+            const text = await response.text().catch(() => '');
+            throw new Error(`[script.js] fetchProducts failed: ${response.status} ${response.statusText}. Body: ${text.slice(0, 200)}`);
+        }
+        return response.json();
     }
 
     function renderProducts(products) {
