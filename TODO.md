@@ -1,15 +1,18 @@
-# TODO - Conversion routes backend (CommonJS -> ES Modules)
+# TODO - Consentement cookies (RGPD) - GreenCart
 
-## Étape 1 — Analyse (fait)
-- Vérifier la présence de CommonJS dans les routes.
+## Étapes
+- [x] Remplacer `frontend/cookie-banner.js` (stub) par une implémentation complète : bandeau + modal "Personnaliser".
 
-## Étape 2 — Conversion ciblée
-- Convertir `backend/routes/webhook.js` en ES Modules (`import`/`export default`). (fait)
-
-
-## Étape 3 — Tests locaux
-- Lancer le serveur (ou un test minimal) pour vérifier que `server.js` charge bien la route webhook.
-
-## Étape 4 — Suivi (au fur et à mesure)
-- Convertir les autres routes référencées par `backend/server.js` jusqu’à ce que Render démarre sans crash.
+- [ ] Ajouter le CSS du bandeau/modal dans `frontend/style.css` (animations, responsive, icône cookie, accessibilité visuelle).
+- [ ] Vérifier le comportement localStorage :
+  - [ ] si `cookieConsent` existe => ne plus afficher
+  - [ ] Accepter => `cookieConsent = accepted`
+  - [ ] Refuser => `cookieConsent = refused`
+  - [ ] Personnaliser => persisté (analytique/marketing) + décision finale accepted/refused
+- [ ] Intégration : confirmer que les pages chargent déjà `/cookie-banner.js`.
+- [ ] Contrôles accessibilité :
+  - [ ] navigation clavier (Tab / Enter)
+  - [ ] fermeture modal via Escape
+  - [ ] focus modal et retour focus
+- [ ] Tests manuels desktop/mobile.
 
