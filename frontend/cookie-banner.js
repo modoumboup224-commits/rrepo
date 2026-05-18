@@ -36,7 +36,11 @@
   }
 
   function getConsent() {
-    return localStorage.getItem(STORAGE_KEY);
+    try {
+      return localStorage.getItem(STORAGE_KEY);
+    } catch {
+      return null;
+    }
   }
 
   function computeFinalDecision(prefs) {
@@ -475,7 +479,9 @@
   }
 
   function initBanner() {
-    if (!('localStorage' in window)) return;
+    // Ne jamais empêcher l'affichage si localStorage est indisponible/bloqué.
+    // On testera la lecture/écriture via safeReadJSON/safeSetItem.
+    if (!window) return;
 
     const existing = getConsent();
     if (existing === CONSENT_ACCEPTED || existing === CONSENT_REFUSED) return;
@@ -509,10 +515,18 @@
     document.body.appendChild(banner);
   }
 
+  console.log('[cookie-banner] script start, readyState=', document.readyState);
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initBanner);
+    console.log('[cookie-banner] waiting DOMContentLoaded');
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('[cookie-banner] DOMContentLoaded -> initBanner');
+      initBanner();
+      console.log('[cookie-banner] after initBanner bannerExists=', !!document.querySelector('.gc-cookie-banner'));
+    });
   } else {
+    console.log('[cookie-banner] initBanner now');
     initBanner();
+    console.log('[cookie-banner] after initBanner bannerExists=', !!document.querySelector('.gc-cookie-banner'));
   }
 })();
 
