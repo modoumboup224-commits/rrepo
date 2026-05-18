@@ -13,10 +13,12 @@ const __dirname = path.dirname(__filename);
 
 dotenv.config({ path: path.join(__dirname, '.env') });
 
-const stripeInstance = stripe(process.env.STRIPE_SECRET_KEY);
+// Stripe doit être optionnel au démarrage (sinon Render peut crash si l'env n'est pas injectée immédiatement)
+let stripeInstance = null;
+if (process.env.STRIPE_SECRET_KEY) {
+    stripeInstance = stripe(process.env.STRIPE_SECRET_KEY);
+}
 
-
-console.log("Clé Stripe secrète utilisée :", process.env.STRIPE_SECRET_KEY);
 
 
 const app = express();

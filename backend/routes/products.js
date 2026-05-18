@@ -8,48 +8,38 @@ import verifyToken from '../middleware/auth.js';
 
 // GET /products - Get products with optional filters
 router.get('/', async (req, res) => {
+    const startedAt = Date.now();
     try {
-        const { category, region, maxPrice, minPrice, expirationBefore, expirationAfter, producer, limit } = req.query;
+        console.log("ROUTE PRODUCTS APPELEE");
 
-        let filter = {};
+        // Guard anti-stall : timeout DB de 8s
+        const timeoutMs = 8000;
+        const timeoutPromise = new Promise((_, reject) => {
+            setTimeout(() => reject(new Error(`Mongo timeout ${timeoutMs}ms`)), timeoutMs);
+        });
 
-        if (category) {
-            filter.category = category;
-        }
-        if (region) {
-            filter.region = region;
-        }
-        if (maxPrice || minPrice) {
-            filter.price = {};
-            if (maxPrice) filter.price.$lte = Number(maxPrice);
-            if (minPrice) filter.price.$gte = Number(minPrice);
-        }
-        if (expirationBefore || expirationAfter) {
-            filter.expirationDate = {};
-            if (expirationBefore) filter.expirationDate.$lte = new Date(expirationBefore);
-            if (expirationAfter) filter.expirationDate.$gte = new Date(expirationAfter);
-        }
-        if (producer) {
-            filter.producerId = new mongoose.Types.ObjectId(producer);
-        }
+        const products = await Promise.race([
+            Product.find({}),
+            timeoutPromise
+        ]);
 
-        let query = Product.find(filter);
+        console.log("Produits trouvés :", products.length);
+        console.log("ROUTE PRODUCTS OK en", Date.now() - startedAt, 'ms');
+        res.status(200).json(products);
+    } catch (error) {
+        console.error("ERREUR PRODUCTS :", error);
+        console.error("ROUTE PRODUCTS ERR en", Date.now() - startedAt, 'ms');
 
-        // Apply limit if specified
-        if (limit) {
-            query = query.limit(parseInt(limit));
-        }
-
-        const products = await query;
-        console.log('Products found:', products);
-        res.json(products);
-    } catch (err) {
-        console.error('[api/products] error:', err);
-        res.status(500).json({ message: 'Erreur serveur sur /api/products', error: err.message });
+        res.status(500).json({
+            success: false,
+            message: error.message,
+            stack: error.stack
+        });
     }
 });
 
 // POST /products - Publish a new product by producer
+
 router.post('/', verifyToken, async (req, res) => {
     try {
         let producerId = req.user.id; // Assuming token contains producer id

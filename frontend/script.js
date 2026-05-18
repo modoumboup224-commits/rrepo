@@ -1,17 +1,30 @@
-// Source of truth pour l’API (évite la double-déclaration)
+// Source of truth pour l’API
 if (!window.__GREENCARD_API_BASE_URL) {
-    window.__GREENCARD_API_BASE_URL = 'https://rrepo.onrender.com';
+    window.__GREENCARD_API_BASE_URL = 'https://rrrrepo.onrender.com';
 }
-const API_BASE_URL = window.__GREENCARD_API_BASE_URL;
+
+// Éviter l’erreur: “Identifier 'API_BASE_URL' has already been declared” si script.js est chargé 2 fois.
+// (Utiliser une variable globale plutôt que const locale.)
+if (!window.__GREENCARD_API_BASE_URL_LOCAL) {
+    window.__GREENCARD_API_BASE_URL_LOCAL = window.__GREENCARD_API_BASE_URL;
+}
+
+// Ne pas déclarer de variable locale `API_BASE_URL`.
+// On lit directement la base URL depuis le scope global à chaque usage.
+
+
+
 // Protéger contre un chargement multiple du script.js
 if (window.__GREENCARD_HOME_RENDER_READY__) {
-    // Ne pas ré-exécuter la logique si une autre instance du script a déjà initialisé.
+    // Ne pas ré-exécuter la logique
 } else {
     window.__GREENCARD_HOME_RENDER_READY__ = true;
 
+
     async function fetchProducts(filters = {}) {
         const queryParams = new URLSearchParams(filters);
-        const url = `${API_BASE_URL}/api/products?` + queryParams.toString();
+        const qs = queryParams.toString();
+        const url = `${API_BASE_URL}/api/products?${qs}`;
         const response = await fetch(url);
         if (!response.ok) {
             const text = await response.text().catch(() => '');
