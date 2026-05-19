@@ -28,10 +28,13 @@ if (window.__GREENCARD_HOME_RENDER_READY__) {
         const response = await fetch(url);
         if (!response.ok) {
             const text = await response.text().catch(() => '');
-            throw new Error(`[script.js] fetchProducts failed: ${response.status} ${response.statusText}. Body: ${text.slice(0, 200)}`);
+            console.error(`[script.js] fetchProducts failed: ${response.status} ${response.statusText}. Body: ${text.slice(0, 200)}`);
+            // Ne pas casser le rendu : on retombe sur une liste vide.
+            return [];
         }
         return response.json();
     }
+
 
     function renderProducts(products) {
         const productList = document.getElementById('productList');
